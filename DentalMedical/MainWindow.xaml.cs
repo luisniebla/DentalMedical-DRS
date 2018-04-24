@@ -140,26 +140,7 @@ namespace DentalMedical
 
         }
         
-        private ArrayList ReadExcelHeaders(Excel.Worksheet xlwksht, string outputName)
-        {
-            Excel.Range xlCell = xlwksht.Range["A1"];
-            while (xlCell.Value == "" || xlCell.Value2 == null)
-            {
-                xlwksht.Range["A1"].EntireRow.Delete();
-                xlCell = xlwksht.Range["A1"];
-            }
-
-            // FName, LName, BirthDate, Email, HPhone, MPHone, Last Visit, Appt Date, Appt Time
-            ArrayList xl = new ArrayList();
-
-            for(int i = 1; i < 17; i++)
-            {
-                xl.Add(xlwksht.Cells[1, colLoc].Value);
-            }
-            
-            xlwksht.SaveAs(@"C:\Users\data\Desktop\" + outputName + ".csv", Microsoft.Office.Interop.Excel.XlFileFormat.xlCSVWindows, Type.Missing, Type.Missing, true, false, Excel.XlSaveAsAccessMode.xlNoChange, Excel.XlSaveConflictResolution.xlLocalSessionChanges, Type.Missing, Type.Missing);
-            return xl;
-        }
+        
         
 
         private void BtnImport_Click(object sender, RoutedEventArgs e)
