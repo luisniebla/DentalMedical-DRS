@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,30 +27,36 @@ namespace DentalMedical
          *  @return
          *  - null: Either couldn't open the sheet/workbook, or I skipped more than 20 lines and couldn't find header.
          */
-        public ArrayList ExportExcelHeaders(string excelFilePath, string csvExportPath = "", object password = null, object sheetLoc = null)
+        public ArrayList ExportExcelHeaders(string excelFilePath, string sheetName, string csvExportPath = "", object password = null)
         {
-            if (sheetLoc == null)
-                sheetLoc = 1;
 
             ArrayList headers = new ArrayList();
-            Excel.Workbook xlWkbook = new Excel.Workbook();
+            Excel.Workbook xlWkbook;
             Excel.Worksheet xlWksht;
 
+            if (password == null)
+                password = "";
+
+            
             try
             {
                 xlWkbook = xlApp.Workbooks.Open(excelFilePath, Password: password, ReadOnly: true);
-                xlWksht = xlWkbook.Worksheets[sheetLoc];
+                xlWksht = xlWkbook.Worksheets.Item[sheetName];
             }
-            catch (System.NullReferenceException)
+            catch (System.NullReferenceException e)
             {
-                xlWkbook.Close();
-                return null;    // Couldn't open sheet
+                
+                throw e; 
+            }
+            catch(System.Runtime.InteropServices.COMException e)
+            {
+                throw new System.Runtime.InteropServices.COMException("Bad password");
             }
 
             // Skip any unnecessary space at the top.
             Excel.Range xlCell = xlWksht.Range["A1"];
             int skipped = 0;
-            while (xlCell.Value != "First Name")
+            while (xlCell.Value == "" || xlCell.Value2 == null)
             {
                 xlWksht.Range["A1"].EntireRow.Delete();
                 xlCell = xlWksht.Range["A1"];
@@ -64,6 +72,8 @@ namespace DentalMedical
                 headers.Add(xlWksht.Cells[1, i].Value);
             }
             
+
+
             if (csvExportPath != "")
                 xlWksht.SaveAs(csvExportPath, Microsoft.Office.Interop.Excel.XlFileFormat.xlCSVWindows, Type.Missing, Type.Missing, true, false, Excel.XlSaveAsAccessMode.xlNoChange, Excel.XlSaveConflictResolution.xlLocalSessionChanges, Type.Missing, Type.Missing);
 
@@ -85,26 +95,6 @@ namespace DentalMedical
         {
             xlApp.Quit();
         }
-
-        private ArrayList ReadExcelHeaders(Excel.Worksheet xlwksht, string outputName)
-        {
-            Excel.Range xlCell = xlwksht.Range["A1"];
-            while (xlCell.Value == "" || xlCell.Value2 == null)
-            {
-                xlwksht.Range["A1"].EntireRow.Delete();
-                xlCell = xlwksht.Range["A1"];
-            }
-
-            // FName, LName, BirthDate, Email, HPhone, MPHone, Last Visit, Appt Date, Appt Time
-            ArrayList xl = new ArrayList();
-
-            for (int i = 1; i < 17; i++)
-            {
-                xl.Add(xlwksht.Cells[1, colLoc].Value);
-            }
-
-            xlwksht.SaveAs(@"C:\Users\data\Desktop\" + outputName + ".csv", Microsoft.Office.Interop.Excel.XlFileFormat.xlCSVWindows, Type.Missing, Type.Missing, true, false, Excel.XlSaveAsAccessMode.xlNoChange, Excel.XlSaveConflictResolution.xlLocalSessionChanges, Type.Missing, Type.Missing);
-            return xl;
-        }
+        
     }
 }
