@@ -17,7 +17,13 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Collections;
 
+using System.Data.OleDb;
+using System.Data;
+
 using Excel = Microsoft.Office.Interop.Excel;
+using ExcelDataReader;
+using System.Data;
+using MySql.Data.MySqlClient;
 
 namespace DentalMedical
 {
@@ -64,16 +70,65 @@ namespace DentalMedical
 
         private void BtnOpenSelected_Click(object sender, RoutedEventArgs e)
         {
-            ExcelToMySQL handler = new ExcelToMySQL();
-            String password = TextBoxPassword.Text;
-            String campaign = TextBoxSearchCriteria.Text;
+            // Create connection string variable. Modify the "Data Source"
+            // parameter as appropriate for your environment.
+            String sConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + listBoxSearchResults.SelectedItem.ToString() + ";Extended Properties='Excel 12.0;HDR=YES;IMEX=1;';";
 
-            handler.ExportExcelHeaders(listBoxSearchResults.SelectedItem.ToString(),@"April 2018", @"C:\Users\data\Desktop\" + campaign + "month.csv", password);
-            handler.ExportExcelHeaders(listBoxSearchResults.SelectedItem.ToString(), "Master", @"C:\Users\data\Desktop\" + campaign + "master.csv", password);
+            // Create connection object by using the preceding connection string.
+            OleDbConnection objConn = new OleDbConnection(sConnectionString);
 
-            handler.CloseExcel();
+            // Open connection with the database.
+            objConn.Open();
+
+            // The code to follow uses a SQL SELECT command to display the data from the worksheet.
+
+            // Create new OleDbCommand to return data from worksheet.
+            OleDbCommand objCmdSelect = new OleDbCommand("SELECT * FROM myRange1", objConn);
+
+            // Create new OleDbDataAdapter that is used to build a DataSet
+            // based on the preceding SQL SELECT statement.
+            OleDbDataAdapter objAdapter1 = new OleDbDataAdapter();
+
+            // Pass the Select command to the adapter.
+            objAdapter1.SelectCommand = objCmdSelect;
+
+            // Create new DataSet to hold information from the worksheet.
+            DataSet objDataset1 = new DataSet();
+
+            // Fill the DataSet with the information from the worksheet.
+            objAdapter1.Fill(objDataset1, "XLData");
+
+            // Bind data to DataGrid control.
+            DataGrid1.ItemsSource = objDataset1.Tables[0].DefaultView;
+    
+
+            // Clean up objects.
+            objConn.Close();
+            //ExcelToMySQL handler = new ExcelToMySQL();
+            //String password = TextBoxPassword.Text;
+            //String campaign = TextBoxSearchCriteria.Text;
+
+            //handler.ExportExcelHeaders(listBoxSearchResults.SelectedItem.ToString(),@"Apr 2018", @"C:\Users\data\Desktop\" + campaign + "month.csv", password);
+            //handler.ExportExcelHeaders(listBoxSearchResults.SelectedItem.ToString(), "Master", @"C:\Users\data\Desktop\" + campaign + "master.csv", password);
+
+            /**
+            var dbCon = DBConnection.Instance();
+            dbCon.DatabaseName = "test";
+            if (dbCon.IsConnect())
+            {
+                //suppose col0 and col1 are defined as VARCHAR in the DB
+                string query = "LOAD DATA LOW_PRIORITY LOCAL INFILE 'C:\\Users\\data\\Desktop\\" + campaign + "month.csv' INTO TABLE `test`.`saltmonth` CHARACTER SET latin1 FIELDS TERMINATED BY '|' LINES TERMINATED BY '\r\n' IGNORE 1 LINES (`First Name`, `Last Name`, `Telephone`, `DIAL`, `Alt #`, `Email`, `DOB/Age`, `Last Visit`, `Resolution`, `Appt Date`, `Appt Time`, `Notes`, `Call Back Date`, `CC Type`, `Provider`, `Insurance`, `Inactives`, `Update`, `# Dials`);";
+                var cmd = new MySqlCommand(query, dbCon.Connection);
+                var reader = cmd.ExecuteReader();
+                //while (reader.Read())
+                //{
+                //    string someStringFromColumnZero = reader.GetString(0);
+                //    string someStringFromColumnOne = reader.GetString(1);
+                //    Console.WriteLine(someStringFromColumnZero + "," + someStringFromColumnOne);
+                //}
+                dbCon.Close();
+            }*/
         }
-        
         
         private void BtnImport_Click(object sender, RoutedEventArgs e)
         {

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace DentalMedical
@@ -36,12 +37,11 @@ namespace DentalMedical
 
             if (password == null)
                 password = "";
-
             
             try
             {
                 xlWkbook = xlApp.Workbooks.Open(excelFilePath, Password: password, ReadOnly: true);
-                xlWksht = xlWkbook.Worksheets.Item[sheetName];
+                xlWksht = (Excel.Worksheet) xlWkbook.Worksheets[sheetName];
             }
             catch (System.NullReferenceException e)
             {
@@ -55,8 +55,8 @@ namespace DentalMedical
 
             // Skip any unnecessary space at the top.
             Excel.Range xlCell = xlWksht.Range["A1"];
-            int skipped = 0;
-            while (xlCell.Value == "" || xlCell.Value2 == null)
+            int skipped = 1;
+            while (xlCell.Value != "First Name")
             {
                 xlWksht.Range["A1"].EntireRow.Delete();
                 xlCell = xlWksht.Range["A1"];
@@ -64,7 +64,7 @@ namespace DentalMedical
                 if (skipped > 20)
                     return null;
             }
-
+            MessageBox.Show("Lines skipped" + skipped);
             // FName, LName, BirthDate, Email, HPhone, MPHone, Last Visit, Appt Date, Appt Time
 
             for (int i = skipped; i < 17; i++)
