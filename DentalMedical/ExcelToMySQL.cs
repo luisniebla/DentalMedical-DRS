@@ -28,9 +28,8 @@ namespace DentalMedical
          *  @return
          *  - null: Either couldn't open the sheet/workbook, or I skipped more than 20 lines and couldn't find header.
          */
-        public ArrayList ExportExcelHeaders(string excelFilePath, string sheetName, string csvExportPath = "", object password = null)
+        public ArrayList ExportExcelHeaders(string excelFilePath, int sheetName, string csvExportPath = "", object password = null)
         {
-
             ArrayList headers = new ArrayList();
             Excel.Workbook xlWkbook;
             Excel.Worksheet xlWksht;
@@ -52,13 +51,12 @@ namespace DentalMedical
             {
                 throw new System.Runtime.InteropServices.COMException("Bad password");
             }
-
+            
             // Skip any unnecessary space at the top.
             Excel.Range xlCell = xlWksht.Range["A1"];
             int skipped = 1;
-            while (xlCell.Value != "First Name")
+            while (xlCell.Value != "First Name" || xlCell.Value != "LName")
             {
-                xlWksht.Range["A1"].EntireRow.Delete();
                 xlCell = xlWksht.Range["A1"];
                 skipped++;
                 if (skipped > 20)
@@ -66,18 +64,37 @@ namespace DentalMedical
             }
             MessageBox.Show("Lines skipped" + skipped);
             // FName, LName, BirthDate, Email, HPhone, MPHone, Last Visit, Appt Date, Appt Time
-
-            for (int i = skipped; i < 17; i++)
-            {
-                headers.Add(xlWksht.Cells[1, i].Value);
-            }
             
+            // TODO: Make this into a while loop
+            
+            //for (int i = 1; i < 17; i++)
+            //{
+            //    MessageBox.Show("Adding column: " + xlWksht.Cells[skipped, i].Value);
+            //    headers.Add(xlWksht.Cells[skipped, i].Value);
+            //} 
 
+            var r = xlWksht.Range["A1"].Resize[1, 20];
+            var array = r.Value;
 
-            if (csvExportPath != "")
-                xlWksht.SaveAs(csvExportPath, Microsoft.Office.Interop.Excel.XlFileFormat.xlCSVWindows, Type.Missing, Type.Missing, true, false, Excel.XlSaveAsAccessMode.xlNoChange, Excel.XlSaveConflictResolution.xlLocalSessionChanges, Type.Missing, Type.Missing);
+            for(int i = 1; i <= 20; i++)
+            {
+                var text = array[skipped, i] as string;
+                MessageBox.Show(text);
+            }
 
-            xlWkbook.Close();
+            var array2 = Array.CreateInstance(
+                   typeof(object),
+                   new int[] { 20, 1 },
+                   new int[] { 1, 1 }) as object[,];
+
+            for (int i = 1; i <= 20; i++)
+            {
+                array2[i, 1] = string.Format("Text{0}", i);
+            }
+            r.Value2 = array2;
+            xlWksht.SaveAs(csvExportPath, Microsoft.Office.Interop.Excel.XlFileFormat.xlCSVWindows, Type.Missing, Type.Missing, true, false, Excel.XlSaveAsAccessMode.xlNoChange, Excel.XlSaveConflictResolution.xlLocalSessionChanges, Type.Missing, Type.Missing);
+
+            xlWkbook.Close(SaveChanges: true);
             return headers;
 
             // TODO: Error catching in case we can't find the headers and end up with all empties. None should be empty.
@@ -91,6 +108,10 @@ namespace DentalMedical
             
         }
 
+        public void OpenExtractClose(string path)
+        {
+            Excel.Application 
+        }
         public void CloseExcel()
         {
             xlApp.Quit();

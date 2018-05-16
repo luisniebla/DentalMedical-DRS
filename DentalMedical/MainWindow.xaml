@@ -5,18 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DentalMedical"
         mc:Ignorable="d"
-        Title="MainWindow" Height="378" Width="359">
-    <Grid Height="276" VerticalAlignment="Top">
-        <Button Content="Search" HorizontalAlignment="Left" Margin="20,90,0,161" Width="75" Click="Button_Click"/>
-        <TextBox x:Name="TextBoxSearchCriteria" HorizontalAlignment="Left" Height="25" Margin="100,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="95" Grid.Row="1" Text="Four" TabIndex="1"/>
-        <Label x:Name="LabelSearchNotification" Content="" HorizontalAlignment="Left" Height="25" Margin="50,3,0,0" VerticalAlignment="Top" Width="45" Grid.Row="1"/>
-        <ListBox x:Name="listBoxSearchResults" Margin="20,130,21,66" ScrollViewer.HorizontalScrollBarVisibility="Visible"
+        Title="MainWindow" Height="383" Width="354">
+    <Grid Height="373" VerticalAlignment="Top" Margin="0,0,0,-17">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="255*"/>
+            <ColumnDefinition Width="91*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="65*"/>
+            <RowDefinition Height="4*"/>
+        </Grid.RowDefinitions>
+        <Button Content="Search" HorizontalAlignment="Left" Margin="20,90,0,0" Width="75" Click="Button_Click" Height="25" VerticalAlignment="Top"/>
+        <TextBox x:Name="TextBoxSearchCriteria" HorizontalAlignment="Left" Height="25" Margin="100,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="95" Text="Four" TabIndex="1"/>
+        <Label x:Name="LabelSearchNotification" Content="" HorizontalAlignment="Left" Height="25" Margin="50,3,0,0" VerticalAlignment="Top" Width="45"/>
+        <ListBox x:Name="listBoxSearchResults" Margin="20,246,21,10" ScrollViewer.HorizontalScrollBarVisibility="Visible" Grid.ColumnSpan="2"
                  />
-        <Button x:Name="BtnOpenSelected" Content="Open" Height="20" Margin="0,0,275,31" VerticalAlignment="Bottom" Click="BtnOpenSelected_Click" HorizontalAlignment="Right" Width="56"/>
+        <Button x:Name="BtnOpenSelected" Content="Open" Height="20" Margin="0,0,55,211" VerticalAlignment="Bottom" Click="BtnOpenSelected_Click" HorizontalAlignment="Right" Width="56" Grid.ColumnSpan="2"/>
         <TextBox x:Name="TextBoxPassword" HorizontalAlignment="Left" Height="25" Margin="85,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" Text="FOUR1" TabIndex="2"/>
         <Label Content="Password" HorizontalAlignment="Left" Height="25" Margin="20,45,0,0" VerticalAlignment="Top" Width="65"/>
-        <Label Content="Campaign" HorizontalAlignment="Left" Height="25" Margin="20,8,0,0" VerticalAlignment="Top" Width="75" Grid.Row="1"/>
-        <DataGrid x:Name="DataGrid1" HorizontalAlignment="Left" Height="80" Margin="10,265,0,-69" VerticalAlignment="Top" Width="331"/>
+        <Label Content="Campaign" HorizontalAlignment="Left" Height="25" Margin="20,8,0,0" VerticalAlignment="Top" Width="75"/>
+        <ListBox x:Name="listBoxSQLTables" HorizontalAlignment="Left" Height="107" Margin="210,8,0,0" VerticalAlignment="Top" Width="105" SelectionChanged="listBoxSQLTables_SelectionChanged" Grid.ColumnSpan="2"/>
+        <TextBlock x:Name="TextBlockCampaignInfo" HorizontalAlignment="Left" Height="85" Margin="20,145,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="305" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2"/>
 
     </Grid>
 </Window>
