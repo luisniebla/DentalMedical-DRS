@@ -11,6 +11,7 @@ namespace DentalMedical
     {
         private DBConnection()
         {
+
         }
 
         private string databaseName = string.Empty;
@@ -49,6 +50,23 @@ namespace DentalMedical
             return true;
         }
 
+        public MySqlDataReader QueryDB(string table, string command)
+        {
+            var dbCon = Instance();
+            dbCon.DatabaseName = "test";
+            if (dbCon.IsConnect())
+            {
+                var cmd = new MySqlCommand(command, connection);
+
+                var reader = cmd.ExecuteReader();
+                //dbCon.Close();
+                return reader;
+            }
+
+            return null;
+        }
+
+        // Close the connection.
         public void Close()
         {
             connection.Close();

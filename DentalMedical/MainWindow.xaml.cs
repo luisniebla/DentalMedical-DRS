@@ -24,16 +24,20 @@ using Excel = Microsoft.Office.Interop.Excel;
 using ExcelDataReader;
 using System.Data;
 using MySql.Data.MySqlClient;
+using System.Runtime.InteropServices;
+using System.Data.Common;
+using System.Diagnostics;
+using Microsoft.Office.Interop.Excel;
 
 namespace DentalMedical
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : System.Windows.Window
     {
         public object Application { get; private set; }
-        public static Excel.Application xlApp = new Excel.Application();
+        //public static Excel.Application xlApp = new Excel.Application();
         //public static Excel.Workbook xlCBPTemplate = xlApp.Workbooks.Open(@"//serv-az/drs_client_admin/Call Campaigns/ZZ_CBPProccess/CBP Template April (Blackford).xlsx", ReadOnly:true);
         //Excel.Workbook xlCBPData = xlApp.Workbooks.Open(@"\\serv-az\drs_client_admin\Call Campaigns\ZZ_Merge & CBP RawData\CallBackProof Data\042118\Blackford Lifetime CBP.xlsx");
 
@@ -41,7 +45,7 @@ namespace DentalMedical
         public MainWindow()
         {
             InitializeComponent();
-            xlApp.DisplayAlerts = false;
+            //xlApp.DisplayAlerts = false;
             
             //ReadExcelHeaders(xlCBPData.Worksheets[4], "CBPData");
             //xlCBPData.Close();
@@ -71,49 +75,55 @@ namespace DentalMedical
         private void BtnOpenSelected_Click(object sender, RoutedEventArgs e)
         {
             ExcelToMySQL handler = new ExcelToMySQL();
-            String password = TextBoxPassword.Text;
-            String campaign = TextBoxSearchCriteria.Text;
+            
+            string password = TextBoxPassword.Text;
+            string campaign = TextBoxSearchCriteria.Text;
+            string filePath = listBoxSearchResults.SelectedItem.ToString();
 
-            //ArrayList monthHeaders = handler.ExportExcelHeaders(listBoxSearchResults.SelectedItem.ToString(),3, @"C:\Users\data\Desktop\" + campaign + "month.csv", password);
-            //ArrayList masterHeaders = handler.ExportExcelHeaders(listBoxSearchResults.SelectedItem.ToString(), 1, @"C:\Users\data\Desktop\" + campaign + "master.csv", password);
+            ExcelCampaign selectedCampaign = handler.OpenCampaign(filePath, password);
 
-
-            var dbCon = DBConnection.Instance();
-            dbCon.DatabaseName = "test";
-            if (dbCon.IsConnect())
+            try
             {
-                var query = "SELECT * FROM logmeins WHERE id = 6;";
-
-                var cmd = new MySqlCommand(query, dbCon.Connection);
-
-                var reader = cmd.ExecuteReader();
-
-                while (reader.Read())
+                ArrayList selectedCampaignSheets = selectedCampaign.GetWorksheets();
+                foreach(string sheetName in selectedCampaignSheets)
                 {
-                    string campaignInfo = "";
-                    for (int i = 1; i < reader.FieldCount; i++)
-                        campaignInfo += listBoxSQLTables.Items.Add(reader.GetString(i));
-                    TextBlockCampaignInfo.Text = campaignInfo;
+                    listBoxTables.Items.Add(sheetName);
                 }
-                dbCon.Close();
-                listBoxSearchResults.UpdateLayout();
-                MessageBox.Show("SUCCESS");
+                listBoxTables.UpdateLayout();
 
+                selectedCampaign.close();
             }
+            catch(Exception ex)
+            {
+                Debug.Write("Could not open excel workbook " + campaign + "\n" + ex.ToString());
+            }
+            
+            handler.CloseExcel();
+            //OpenXMLSDK readXL = new OpenXMLSDK(listBoxSearchResults.SelectedItem.ToString());
+
+            //MessageBox.Show(readXL.SAXRead());
+            //readXL.LoopRows();
+            //readXL.SAXRead();
+            //handler.ExportExcelHeaders(listBoxSearchResults.SelectedItem.ToString(),"May 2018", @"C:\Users\data\Desktop\" + campaign + "month.csv", password);
+            //handler.ExportExcelHeaders(listBoxSearchResults.SelectedItem.ToString(), "Master", @"C:\Users\data\Desktop\" + campaign + "master.csv", password);
+
+            //handler.CloseExcel();
+
         }
-        
+       
         private void BtnImport_Click(object sender, RoutedEventArgs e)
         {
-            Excel.Application xlApp = new Excel.Application();
-            xlApp.Visible = true;
-            Excel.Workbook xlCBPTemplate = xlApp.Workbooks.Open(@"//serv-az/drs_client_admin/Call Campaigns/ZZ_CBPProccess/CBP Template April (Blackford).xlsx");
-            Excel.Worksheet xlFoundAppts = xlCBPTemplate.Worksheets[3];
-            Excel.Range lastCBPLine = xlFoundAppts.Cells.SpecialCells(Excel.XlCellType.xlCellTypeLastCell, Type.Missing);
+            
 
             // Append found to here.
         }
 
         private void listBoxSQLTables_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            
+        }
+
+        private void App_Close(object sender, System.ComponentModel.CancelEventArgs e)
         {
             
         }
