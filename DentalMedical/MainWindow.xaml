@@ -20,7 +20,7 @@
         <Label x:Name="LabelSearchNotification" Content="" HorizontalAlignment="Left" Height="25" Margin="115,90,0,0" VerticalAlignment="Top" Width="45"/>
         <ListBox x:Name="listBoxSearchResults" Margin="20,246,21,10" ScrollViewer.HorizontalScrollBarVisibility="Visible"  Grid.ColumnSpan="2"
                  />
-        <Button x:Name="BtnOpenSelected" Content="Open" Height="20" Margin="-15,0,179,110" VerticalAlignment="Bottom" Click="BtnOpenSelected_Click" HorizontalAlignment="Right" Width="56"/>
+        <Button x:Name="BtnOpenSelected" Content="Open" Height="20" Margin="0,0,144,110" VerticalAlignment="Bottom" Click="BtnOpenSelected_Click" HorizontalAlignment="Right" Width="56"/>
         <TextBox x:Name="TextBoxPassword" HorizontalAlignment="Left" Height="25" Margin="85,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" Text="DIAB1" TabIndex="2"/>
         <Label Content="Password" HorizontalAlignment="Left" Height="25" Margin="20,45,0,0" VerticalAlignment="Top" Width="65"/>
         <Label Content="Campaign" HorizontalAlignment="Left" Height="25" Margin="20,8,0,0" VerticalAlignment="Top" Width="75"/>

@@ -57,6 +57,7 @@ namespace DentalMedical
             listBoxSearchResults.UpdateLayout();
 
             IO myIO = new IO();
+
             string campaign = TextBoxSearchCriteria.Text;
             string searchCriteria = "*" + campaign + "*Data*.xlsm";
  
@@ -84,13 +85,19 @@ namespace DentalMedical
 
             try
             {
-                ArrayList selectedCampaignSheets = selectedCampaign.GetWorksheets();
-                foreach(string sheetName in selectedCampaignSheets)
-                {
-                    listBoxTables.Items.Add(sheetName);
-                }
-                listBoxTables.UpdateLayout();
+                //ArrayList selectedCampaignSheets = selectedCampaign.GetWorksheets();
+                
+                
+                
 
+                
+                //Range dncLine = xlMaster.Range["A1", "A10"].Find("DO NOT CALL ABOVE LINE", MatchCase: false);
+
+
+                //MessageBox.Show("FOUND: " + dncLine.Row.ToString());
+
+                string ext = System.IO.Path.GetExtension(filePath);
+                selectedCampaign.xlWorkbook.SaveAs(@"C:\Users\Data\Desktop\pretty." + ext);
                 selectedCampaign.close();
             }
             catch(Exception ex)
@@ -108,7 +115,6 @@ namespace DentalMedical
             //handler.ExportExcelHeaders(listBoxSearchResults.SelectedItem.ToString(), "Master", @"C:\Users\data\Desktop\" + campaign + "master.csv", password);
 
             //handler.CloseExcel();
-
         }
        
         private void BtnImport_Click(object sender, RoutedEventArgs e)
