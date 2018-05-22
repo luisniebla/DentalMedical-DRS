@@ -13,6 +13,8 @@ namespace DentalMedical
     {
         private string Title { get; set; }
         private string Month { get; set; }
+        ArrayList monthHeaders { get; set; }
+        ArrayList masterHeaders { get; set; }
         Worksheet masterSheet { get; set; }
         Worksheet monthSheet { get; set; }
 
@@ -25,6 +27,8 @@ namespace DentalMedical
             {
                 masterSheet = GetSheet("Master");
                 monthSheet = GetSheet(Month);
+                masterHeaders = GetHeaders(masterSheet, "First Name");
+                monthHeaders = GetHeaders(monthSheet, "First Name");
             }
             catch(Exception e) 
             {
@@ -33,11 +37,15 @@ namespace DentalMedical
             }
         }
 
+        // TODO: Use SQL 
         public void CleanSheet(string sheetName, string firstCol, string firstColHeader) 
         {
+            Range dncLine = masterSheet.Range["A1", "A10"].Find("DO NOT CALL ABOVE LINE", MatchCase: false);
 
-            
-            
+            while (masterSheet.Range[firstCol + "1"].Value != "First Name")
+            {
+                masterSheet.Range[firstCol + "1"].EntireRow.Delete();
+            }
         }
 
         public int GetDNCRow(string sheetName)
@@ -45,5 +53,6 @@ namespace DentalMedical
             return 0;
         }
 
+        
     }
 }

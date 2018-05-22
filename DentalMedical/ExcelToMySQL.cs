@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Excel;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,10 +10,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using Excel = Microsoft.Office.Interop.Excel;
 
-
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace DentalMedical
 {
@@ -25,12 +22,12 @@ namespace DentalMedical
             xlApp  = new Excel.Application();   // In case we need to import multiple Excel files only 1 Application for all of them.
         }
 
-        public ExcelCampaign OpenCampaign(string filePath, string password)
+        public ExcelCampaign OpenCampaign(string filePath, string password, string title, string monthSheet)
         {
             ExcelCampaign newExcel = null; ;
             try
             {
-                newExcel = new ExcelCampaign(xlApp, filePath, password);
+                newExcel = new ExcelCampaign(xlApp, filePath, password, title, monthSheet);
             }
             catch (Exception e)
             {
@@ -75,43 +72,11 @@ namespace DentalMedical
          *  
          *  @return
          *  - null: Either couldn't open the sheet/workbook, or I skipped more than 20 lines and couldn't find header.
+         *  
+         * 
          */
-        public ArrayList ExportExcelHeaders(string excelFilePath, string sheetName, string csvExportPath = "", object password = null)
-        {
-            ArrayList headers = new ArrayList();
-            
-            
-            // Skip any unnecessary space at the top.
-            //Excel.Range xlCell = xlWksht.Range["A1"];
-            /**
-            int skipped = 1;
-            while (xlCell.Value != "First Name" || xlCell.Value != "LName")
-            {
-                //xlCell = xlWksht.Range["A1"];
-                skipped++;
-                if (skipped > 20)
-                    return null;
-            }
-            MessageBox.Show("Lines skipped" + skipped);
-            **/
-            // FName, LName, BirthDate, Email, HPhone, MPHone, Last Visit, Appt Date, Appt Time
-            
-            // TODO: Make this into a while loop
-            
-            //for (int i = 1; i < 17; i++)
-            //{
-            //    MessageBox.Show("Adding column: " + xlWksht.Cells[skipped, i].Value);
-            //    headers.Add(xlWksht.Cells[skipped, i].Value);
-            //} 
 
-            //xlWksht.SaveAs(csvExportPath, Microsoft.Office.Interop.Excel.XlFileFormat.xlCSVWindows, Type.Missing, Type.Missing, true, false, Excel.XlSaveAsAccessMode.xlNoChange, Excel.XlSaveConflictResolution.xlLocalSessionChanges, Type.Missing, Type.Missing);
-            
-            //xlWkbook.Close(SaveChanges: true);
-            return headers;
-
-            // TODO: Error catching in case we can't find the headers and end up with all empties. None should be empty.
-        }
-
+        
         public void ExportExcel(string xlFilePath, string xlPassword)
         {
 

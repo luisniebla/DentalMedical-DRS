@@ -73,6 +73,7 @@ namespace DentalMedical
             LabelSearchNotification.Content = "DONE";
         }
 
+
         private void BtnOpenSelected_Click(object sender, RoutedEventArgs e)
         {
             ExcelToMySQL handler = new ExcelToMySQL();
@@ -81,23 +82,17 @@ namespace DentalMedical
             string campaign = TextBoxSearchCriteria.Text;
             string filePath = listBoxSearchResults.SelectedItem.ToString();
 
-            ExcelCampaign selectedCampaign = handler.OpenCampaign(filePath, password);
+            ExcelCampaign selectedCampaign = handler.OpenCampaign(filePath, password, campaign, "May 2018");
+            
 
             try
             {
                 //ArrayList selectedCampaignSheets = selectedCampaign.GetWorksheets();
-                
-                
-                
-
-                
-                //Range dncLine = xlMaster.Range["A1", "A10"].Find("DO NOT CALL ABOVE LINE", MatchCase: false);
-
 
                 //MessageBox.Show("FOUND: " + dncLine.Row.ToString());
 
                 string ext = System.IO.Path.GetExtension(filePath);
-                selectedCampaign.xlWorkbook.SaveAs(@"C:\Users\Data\Desktop\pretty." + ext);
+                selectedCampaign.xlWorkbook.SaveAs(@"C:\Users\Data\Desktop\pretty.csv");
                 selectedCampaign.close();
             }
             catch(Exception ex)
@@ -111,10 +106,6 @@ namespace DentalMedical
             //MessageBox.Show(readXL.SAXRead());
             //readXL.LoopRows();
             //readXL.SAXRead();
-            //handler.ExportExcelHeaders(listBoxSearchResults.SelectedItem.ToString(),"May 2018", @"C:\Users\data\Desktop\" + campaign + "month.csv", password);
-            //handler.ExportExcelHeaders(listBoxSearchResults.SelectedItem.ToString(), "Master", @"C:\Users\data\Desktop\" + campaign + "master.csv", password);
-
-            //handler.CloseExcel();
         }
        
         private void BtnImport_Click(object sender, RoutedEventArgs e)

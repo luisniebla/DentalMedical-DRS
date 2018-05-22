@@ -16,37 +16,44 @@ namespace DentalMedical
      */
     class OpenXMLSDK
     {
-        SpreadsheetDocument xlDoc;
+        //SpreadsheetDocument xlDoc;
 
-        public OpenXMLSDK(string fileName)
+        public OpenXMLSDK()
         {
             // OpenXML tosses error when attempting to open password protected documents.
-            xlDoc = SpreadsheetDocument.Open(fileName, true);
+            //xlDoc = SpreadsheetDocument.Open(fileName, true);
         }
         // The SAX approach is the recommended way to read a workbook
-        public string DOMRead()
-        {
-            if (xlDoc == null)
-                return null;
-            WorkbookPart xlWkbookPart = xlDoc.WorkbookPart;
-            WorksheetPart xlWksheetPart = xlWkbookPart.WorksheetParts.ElementAt(1);
-            Worksheet worksheet = xlWksheetPart.Worksheet;
 
-            
-            
-            SheetData sheetData = worksheet.Elements<SheetData>().First();
-            string text = "";
-            foreach(Row r in sheetData.Elements<Row>())
+            /**
+        public string DOMRead(string fileName)
+        {
+            using (SpreadsheetDocument xlDoc = SpreadsheetDocument.Open(fileName, true))
             {
-                foreach(Cell c in r.Elements<Cell>())
+                if (xlDoc == null)
+                    return null;
+                WorkbookPart xlWkbookPart = xlDoc.WorkbookPart;
+                WorksheetPart xlWksheetPart = xlWkbookPart.WorksheetParts.ElementAt(1);
+                Worksheet worksheet = xlWksheetPart.Worksheet;
+
+
+
+                SheetData sheetData = worksheet.Elements<SheetData>().First();
+                string text = "";
+                foreach (Row r in sheetData.Elements<Row>())
                 {
-                    text = c.CellValue.Text;
-                    Debug.Write(text + " ");
+                    foreach (Cell c in r.Elements<Cell>())
+                    {
+                        text = c.CellValue.Text;
+                        Debug.Write(text + " ");
+                    }
                 }
+
+
+                return text;
             }
 
-
-            return text;
+               
         }
 
         public string SAXRead()
@@ -130,5 +137,6 @@ namespace DentalMedical
 
             xlDoc.Close();
         }
+    **/
     }
 }
