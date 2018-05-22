@@ -77,40 +77,31 @@ namespace DentalMedical
         private void BtnOpenSelected_Click(object sender, RoutedEventArgs e)
         {
             ExcelCampaign selectedCampaign = null;
-            Excel.Application xlApp = new Excel.Application();
+            //Excel.Application xlApp = new Excel.Application();
             
             string password = TextBoxPassword.Text;
             string campaign = TextBoxSearchCriteria.Text;
             string filePath = listBoxSearchResults.SelectedItem.ToString();
-            
-            // Let's try opening this workbook
-            try
-            {
-                selectedCampaign = new ExcelCampaign(xlApp, filePath, password, campaign, "May 2018");
-            }
-            catch (Exception ex)
-            {
-                Debug.Write("Could not open excel workbook " + campaign + "\n" + ex.ToString());
-                xlApp.Quit();
-                return;
-            }
 
-            // Our Excel workbook opened correctly. Let's try exporting to csv
-            try
-            {
-                selectedCampaign.ExportHeaders(@"C:\Users\Data\Desktop\");
-            }
-            catch (Exception ez)
-            {
-                Debug.Write("Could not write headers " + campaign + "\n" + ez.ToString());
-                selectedCampaign.close();
-                xlApp.Quit();
-                return;
-            }
-            
+            ExcelToMySQL handler = new ExcelToMySQL();
+
+            //if (handler.OpenCampaign(filePath, password, campaign, "May 2018") == true)
+            //
+            //    handler.ExcelToCSVToMySQL(@"C:\Users\data\Desktop\");
+            //}
+
             // Okay, we have our csv files. Let's import this baby into SQL
+            CSVToMySQL dbconnection = new CSVToMySQL();
+            dbconnection.Initialize();
+            List<string>[] output = dbconnection.Select("SELECT * FROM logmeins", 39, 26 );
 
-            
+            for(int i = 0; i < output.Length; i++)
+            {
+                MessageBox.Show(output[i].ToArray()[0]);
+            }
+            //xlApp.Quit();
+
+
         }
        
         private void BtnImport_Click(object sender, RoutedEventArgs e)
