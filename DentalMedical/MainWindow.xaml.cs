@@ -76,36 +76,41 @@ namespace DentalMedical
 
         private void BtnOpenSelected_Click(object sender, RoutedEventArgs e)
         {
-            ExcelToMySQL handler = new ExcelToMySQL();
+            ExcelCampaign selectedCampaign = null;
+            Excel.Application xlApp = new Excel.Application();
             
             string password = TextBoxPassword.Text;
             string campaign = TextBoxSearchCriteria.Text;
             string filePath = listBoxSearchResults.SelectedItem.ToString();
-
-            ExcelCampaign selectedCampaign = handler.OpenCampaign(filePath, password, campaign, "May 2018");
             
-
+            // Let's try opening this workbook
             try
             {
-                //ArrayList selectedCampaignSheets = selectedCampaign.GetWorksheets();
-
-                //MessageBox.Show("FOUND: " + dncLine.Row.ToString());
-
-                string ext = System.IO.Path.GetExtension(filePath);
-                selectedCampaign.xlWorkbook.SaveAs(@"C:\Users\Data\Desktop\pretty.csv");
-                selectedCampaign.close();
+                selectedCampaign = new ExcelCampaign(xlApp, filePath, password, campaign, "May 2018");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.Write("Could not open excel workbook " + campaign + "\n" + ex.ToString());
+                xlApp.Quit();
+                return;
+            }
+
+            // Our Excel workbook opened correctly. Let's try exporting to csv
+            try
+            {
+                selectedCampaign.ExportHeaders(@"C:\Users\Data\Desktop\");
+            }
+            catch (Exception ez)
+            {
+                Debug.Write("Could not write headers " + campaign + "\n" + ez.ToString());
+                selectedCampaign.close();
+                xlApp.Quit();
+                return;
             }
             
-            handler.CloseExcel();
-            //OpenXMLSDK readXL = new OpenXMLSDK(listBoxSearchResults.SelectedItem.ToString());
+            // Okay, we have our csv files. Let's import this baby into SQL
 
-            //MessageBox.Show(readXL.SAXRead());
-            //readXL.LoopRows();
-            //readXL.SAXRead();
+            
         }
        
         private void BtnImport_Click(object sender, RoutedEventArgs e)

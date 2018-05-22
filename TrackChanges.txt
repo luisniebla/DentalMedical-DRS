@@ -1,0 +1,18 @@
+# Import to SQL
+
+Need to structure our data in a particular way to make it easier 
+to access and manage.
+0.) Import the Master
+1.) Add a patient_valid_from column
+2.) Add a patient_valid until column
+3.) Add a patient_status column
+    "Office Inactive"
+    "DRS Inactive"
+    "Above The Line Inactive"
+    "Below the Line"
+    "In Month Tab"
+4.) Change the status column of master data
+5.) Import month data, change the status to "In Month Tab" 
+
+Now we have one big database in SQL for this campaign. We are able to 
+track how it evolves, and how it becomes who it is.

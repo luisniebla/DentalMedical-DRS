@@ -27,16 +27,29 @@ namespace DentalMedical
             {
                 masterSheet = GetSheet("Master");
                 monthSheet = GetSheet(Month);
-                masterHeaders = GetHeaders(masterSheet, "First Name");
-                monthHeaders = GetHeaders(monthSheet, "First Name");
+                
+                
             }
-            catch(Exception e) 
+            catch (Exception e) 
             {
                 Debug.WriteLine("Failed to load in sheets");
                 throw e;
             }
         }
 
+        public void ExportHeaders(string exportPath)
+        {
+            masterHeaders = GetHeaders(masterSheet, "First Name");
+            monthHeaders = GetHeaders(monthSheet, "First Name");
+
+            // TODO: Verify that this works across all databases
+            // Works on: Diablo
+            masterSheet.Select();
+            xlWorkbook.SaveAs(string.Format("{0}{1}{2}.csv", exportPath, Title, "Master"), XlFileFormat.xlCSVWindows, XlSaveAsAccessMode.xlNoChange);
+            monthSheet.Select();
+            xlWorkbook.SaveAs(string.Format("{0}{1}{2}.csv", exportPath, Title, "Month"), XlFileFormat.xlCSVWindows, XlSaveAsAccessMode.xlNoChange);
+
+        }
         // TODO: Use SQL 
         public void CleanSheet(string sheetName, string firstCol, string firstColHeader) 
         {

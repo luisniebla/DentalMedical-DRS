@@ -37,46 +37,7 @@ namespace DentalMedical
             return newExcel;
         }
 
-
-        public ArrayList GetAllWorksheetNames(string excelFilePath, string sheetName, string csvExportPath = "", object password = null)
-        {
-            ArrayList worksheets = new ArrayList();
-
-            Excel.Workbook xlWkbook;
-            Excel.Worksheet xlWksht;
-
-            if (password == null)
-                password = "";
-
-            try
-            {
-                xlWkbook = xlApp.Workbooks.Open(excelFilePath, Password: password, ReadOnly: true);
-                xlWksht = (Excel.Worksheet)xlWkbook.Worksheets.get_Item(sheetName);
-            }
-            catch (System.NullReferenceException e)
-            {
-                Debug.WriteLine("Failed to open");
-                throw e;
-            }
-            catch (System.Runtime.InteropServices.COMException e)
-            {
-                throw new System.Runtime.InteropServices.COMException("Bad password");
-            }
-
-            return worksheets;
-        }
-        /*
-         * Read an Excel file (full path) and return the ArrayList describing its headers
-         * Prerequisite: 
-         *  -  Assume the first header
-         *  
-         *  @return
-         *  - null: Either couldn't open the sheet/workbook, or I skipped more than 20 lines and couldn't find header.
-         *  
-         * 
-         */
-
-        
+       
         public void ExportExcel(string xlFilePath, string xlPassword)
         {
 
