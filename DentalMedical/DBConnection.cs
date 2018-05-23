@@ -9,7 +9,11 @@ namespace DentalMedical
 {
     public class DBConnection
     {
-        private DBConnection()
+        private string server;
+        private string database;
+        private string uid;
+        private string password;
+        public DBConnection()
         {
 
         }
@@ -27,34 +31,32 @@ namespace DentalMedical
         {
             get { return connection; }
         }
-
-        private static DBConnection _instance = null;
-        public static DBConnection Instance()
-        {
-            if (_instance == null)
-                _instance = new DBConnection();
-            return _instance;
-        }
+        
 
         public bool IsConnect()
         {
             if (Connection == null)
             {
-                if (String.IsNullOrEmpty(databaseName))
-                    return false;
-                string connstring = string.Format("Server=localhost; database=test; UID=root; password=drs;SslMode=none", databaseName);
-                connection = new MySqlConnection(connstring);
+                server = "localhost";
+                database = "test";
+                uid = "root";
+                password = "drs";
+                string connectionString;
+
+                // 8.0.8 automatically sets SSLMode on. Need to set to off.
+                connectionString = "server=" + server + ";" + "database=" +
+                database + ";" + "user id=" + uid + ";" + "password=" + password + ";" + "SslMode=none;";
+
+                connection = new MySqlConnection(connectionString);
                 connection.Open();
             }
 
             return true;
         }
 
-        public MySqlDataReader QueryDB(string table, string command)
+        public MySqlDataReader QueryDB(string command)
         {
-            var dbCon = Instance();
-            dbCon.DatabaseName = "test";
-            if (dbCon.IsConnect())
+            if (this.IsConnect())
             {
                 var cmd = new MySqlCommand(command, connection);
 
@@ -62,10 +64,41 @@ namespace DentalMedical
                 //dbCon.Close();
                 return reader;
             }
-
             return null;
         }
 
+        public MySqlDataReader CreateStringTable(string tableName, string[] columnHeaders)
+        {
+            if (this.IsConnect())
+            {
+                string command = "CREATE TABLE " + tableName + " (`" + columnHeaders[0] + "` VARCHAR(255) ";
+                for(int i = 1; i < columnHeaders.Length; i++)
+                {
+                    command += ", `" + columnHeaders[i] + "` VARCHAR(255)";
+                }
+                command += ");";
+
+                var cmd = new MySqlCommand(command, connection);
+
+                var reader = cmd.ExecuteReader();
+                //dbCon.Close();
+                return reader;
+            }
+            return null;
+        }
+        
+        
+        public string ConstructTableSchemaString(string[] columnHeaders, string[] columnDataTypes)
+        {
+            string command = " (`" + columnHeaders[0] + "` " + columnDataTypes[0];
+            for (int i = 1; i < columnHeaders.Length; i++)
+            {
+                command += ", `" + columnHeaders[i] + "` " + columnDataTypes[i];
+            }
+            command += ");";
+
+            return command;
+        }
         // Close the connection.
         public void Close()
         {

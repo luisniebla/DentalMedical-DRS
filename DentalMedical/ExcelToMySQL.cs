@@ -1,4 +1,5 @@
 ﻿using Microsoft.Office.Interop.Excel;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,11 +14,10 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace DentalMedical
 {
-    class ExcelToMySQL
+    class ExcelToMySQL : DBConnection
     {
         Excel.Application xlApp = new Excel.Application();
         ExcelCampaign selectedCampaign;
-        CSVToMySQL sqlHandler = new CSVToMySQL();
 
         public ExcelToMySQL()
         {
@@ -41,6 +41,45 @@ namespace DentalMedical
             return true;
         }
         
+        public string LoadCSV(string csvPath, string sqlTable, string delimitter = ",")
+        {
+            string output = "";
+            MySqlDataReader reader = QueryDB("LOAD DATA LOW_PRIORITY LOCAL INFILE '" + csvPath  + "' IGNORE INTO TABLE test." + sqlTable + " FIELDS TERMINATED BY '" + delimitter + "' LINES TERMINATED BY '\r\n' IGNORE 1 LINES;");
+
+            while (reader.Read())
+            {
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    output += reader.GetString(i) + "\n";
+                }
+            }
+
+            reader.Close();
+
+            return output;
+        }
+        public string[] GetMonthHeader()
+        {
+            ArrayList headers = selectedCampaign.ExportHeaders()[0];
+            return ConvertArrayListToStringList(headers);
+        }
+
+        public string[] ConvertArrayListToStringList(ArrayList input)
+        {
+            string[] headerStrings = new string[input.Count];
+            for (int i = 0; i < input.Count; i++)
+            {
+                headerStrings[i] = (string)input[i];
+            }
+
+            return headerStrings;
+        }
+        public string[] GetMasterHeaders()
+        {
+            ArrayList headers =  selectedCampaign.ExportHeaders()[1];
+            return ConvertArrayListToStringList(headers);
+        }
+
         /*
          * Read a csv and use an Arraylist of CSV headers to read in each column.
          */
@@ -61,8 +100,8 @@ namespace DentalMedical
 
             try
             {
-               
-                sqlHandler.Initialize();
+
+                IsConnect();
             }
             catch (Exception e)
             {
@@ -70,14 +109,14 @@ namespace DentalMedical
             }
             return true;
         }
-
-
+        
         
         public bool ConnectToSQL()
         {
-            sqlHandler.Initialize();
+            IsConnect();
             return true;
         }
+
         public void RemovePassword(string filePath, string password)
         {
             Excel.Application xlApp = new Excel.Application();

@@ -37,19 +37,39 @@ namespace DentalMedical
             }
         }
 
-        public void ExportHeaders(string exportPath)
+        public ArrayList[] ExportHeaders(string exportPath = "")
         {
-            masterHeaders = GetHeaders(masterSheet, "First Name");
-            monthHeaders = GetHeaders(monthSheet, "First Name");
+            ArrayList[] headers = new ArrayList[2];
 
-            // TODO: Verify that this works across all databases
-            // Works on: Diablo
-            masterSheet.Select();
-            xlWorkbook.SaveAs(string.Format("{0}{1}{2}.csv", exportPath, Title, "Master"), XlFileFormat.xlCSVWindows, XlSaveAsAccessMode.xlNoChange);
-            monthSheet.Select();
-            xlWorkbook.SaveAs(string.Format("{0}{1}{2}.csv", exportPath, Title, "Month"), XlFileFormat.xlCSVWindows, XlSaveAsAccessMode.xlNoChange);
+            if (masterHeaders == null)
+                masterHeaders = GetHeaders(masterSheet, "First Name");
+            if (monthHeaders == null)
+                monthHeaders = GetHeaders(masterSheet, "First Name");
 
+            headers[0] = monthHeaders;
+            headers[1] = masterHeaders;
+
+            if (exportPath == "")
+                return headers;
+            else
+            {
+                // TODO: Verify that this works across all databases
+                // Works on: Diablo
+                int lastMasterRow = GetLastRow("Master");
+                int lastMonthRow = GetLastRow("May 2018");
+
+                masterSheet.Range["A1:Z" + lastMasterRow].Replace(",","");
+                masterSheet.Select();
+                xlWorkbook.SaveAs(string.Format("{0}{1}{2}.csv", exportPath, Title, "Master"), XlFileFormat.xlCSVWindows, XlSaveAsAccessMode.xlNoChange);
+                masterSheet.Range["A1:Z" + lastMonthRow].Replace(",", "");
+                monthSheet.Select();
+                xlWorkbook.SaveAs(string.Format("{0}{1}{2}.csv", exportPath, Title, "Month"), XlFileFormat.xlCSVWindows, XlSaveAsAccessMode.xlNoChange);
+                
+                return headers;
+            }
+            
         }
+
         // TODO: Use SQL 
         public void CleanSheet(string sheetName, string firstCol, string firstColHeader) 
         {

@@ -26,6 +26,7 @@ namespace DentalMedical
                 dict = new Dictionary<string, Worksheet>();
                 xlWorkbook = xlApplication.Workbooks.Open(filePath, Password: password, ReadOnly: true);
                 xlWorkbook.Unprotect();
+                
                 foreach (Worksheet worksheet in xlWorkbook.Worksheets)
                 {
                     dict.Add(worksheet.Name, worksheet); // Associate the name of every worksheet with its worksheet object
@@ -113,7 +114,7 @@ namespace DentalMedical
             {
                 values.Add(sheet.Cells[row, colIndex].Value);
             }
-
+            values[3] = "DIAL";
             return values;
         }
         /// <summary>
