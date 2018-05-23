@@ -11,8 +11,12 @@ namespace DentalMedical
 {
     public class ExcelCampaign : ExcelHandler
     {
-        private string Title { get; set; }
-        private string Month { get; set; }
+        public string Title
+        {
+            get; set;
+        }
+        public string Month { get; set; }
+        public string Master { get; set; }
         ArrayList monthHeaders { get; set; }
         ArrayList masterHeaders { get; set; }
         Worksheet masterSheet { get; set; }
@@ -22,6 +26,7 @@ namespace DentalMedical
         {
             Title = title;
             Month = month;
+            Master = "Master";
 
             try
             {
@@ -44,7 +49,7 @@ namespace DentalMedical
             if (masterHeaders == null)
                 masterHeaders = GetHeaders(masterSheet, "First Name");
             if (monthHeaders == null)
-                monthHeaders = GetHeaders(masterSheet, "First Name");
+                monthHeaders = GetHeaders(monthSheet, "First Name");
 
             headers[0] = monthHeaders;
             headers[1] = masterHeaders;
@@ -55,15 +60,15 @@ namespace DentalMedical
             {
                 // TODO: Verify that this works across all databases
                 // Works on: Diablo
-                int lastMasterRow = GetLastRow("Master");
-                int lastMonthRow = GetLastRow("May 2018");
+                int lastMasterRow = GetLastRow(Master);
+                int lastMonthRow = GetLastRow(Month);
 
-                masterSheet.Range["A1:Z" + lastMasterRow].Replace(",","");
+                //masterSheet.Range["A1:Z" + lastMasterRow].Replace(",","");
                 masterSheet.Select();
-                xlWorkbook.SaveAs(string.Format("{0}{1}{2}.csv", exportPath, Title, "Master"), XlFileFormat.xlCSVWindows, XlSaveAsAccessMode.xlNoChange);
-                masterSheet.Range["A1:Z" + lastMonthRow].Replace(",", "");
+                xlWorkbook.SaveAs(string.Format("{0}{1}{2}.csv", exportPath, Title, Master), XlFileFormat.xlCSVWindows, XlSaveAsAccessMode.xlNoChange);
+                //masterSheet.Range["A1:Z" + lastMonthRow].Replace(",", "");
                 monthSheet.Select();
-                xlWorkbook.SaveAs(string.Format("{0}{1}{2}.csv", exportPath, Title, "Month"), XlFileFormat.xlCSVWindows, XlSaveAsAccessMode.xlNoChange);
+                xlWorkbook.SaveAs(string.Format("{0}{1}{2}.csv", exportPath, Title, Month), XlFileFormat.xlCSVWindows, XlSaveAsAccessMode.xlNoChange);
                 
                 return headers;
             }

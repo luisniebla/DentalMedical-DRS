@@ -100,7 +100,8 @@ namespace DentalMedical
              }
             else
             {
-                return null;
+                Debug.WriteLine("ExcelHander: Could not readrow");
+                throw new Exception("Could not find header row" + sheet.Name);
             }
             
         }
@@ -109,10 +110,27 @@ namespace DentalMedical
         public ArrayList ReadRow(Worksheet sheet, int row)
         {
             ArrayList values = new ArrayList();
-            
-            for(int colIndex = 1; colIndex <= GetLastColumn(sheet); colIndex++)
+            //int lastColIndex = GetLastColumn(sheet);
+
+            /**
+            object cellValue = "";
+            int colIndex = 1;   // Columns start at index 1
+            do
             {
-                values.Add(sheet.Cells[row, colIndex].Value);
+                if (colIndex == 4)
+                    cellValue = "DIAL"; // Sometimes the DIAL column doesn't have a header. Silly little thing.
+                else
+                    cellValue = sheet.Cells[row, colIndex].Value;
+                if (sheet.Cells[row, colIndex].Value2 != null || sheet.Cells[row, colIndex] != null || sheet.Cells[row, colIndex].Value2.ToString() != "")
+                    values.Add(cellValue);
+                colIndex++;
+            } while (sheet.Cells[row, colIndex].Value2 != null || sheet.Cells[row, colIndex] != null || sheet.Cells[row, colIndex].Value2.ToString() != "");
+            **/
+
+            for(int i = 1; i <= 19; i++)
+            {
+                object cellValue = sheet.Cells[row, i].Value;
+                values.Add(cellValue);
             }
             values[3] = "DIAL";
             return values;
@@ -153,12 +171,18 @@ namespace DentalMedical
         }
         
         // TODO: Use string instead of WOrksheet parameter
+        /// <summary>
+        /// Very difficult to find the last column if we want to be careful not to delete data Too much error checking. 
+        /// </summary>
+        /// <param name="sheet"></param>
+        /// <returns></returns>
         public int GetLastColumn(Worksheet sheet)
         {
-            return sheet.UsedRange.Columns.Count;
+            Range lastRange = sheet.Cells.SpecialCells(XlCellType.xlCellTypeLastCell, Type.Missing);
+            return 18;
         }
 
-        public void close()
+        public void CloseWorkbook()
         {
             xlWorkbook.Close();
         }

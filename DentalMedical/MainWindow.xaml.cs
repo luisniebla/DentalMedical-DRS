@@ -78,52 +78,25 @@ namespace DentalMedical
 
         private void BtnOpenSelected_Click(object sender, RoutedEventArgs e)
         {
-            //Excel.Application xlApp = new Excel.Application();
-
             string password = TextBoxPassword.Text;
             string campaign = TextBoxSearchCriteria.Text;
             string filePath = listBoxSearchResults.SelectedItem.ToString();
 
             ExcelToMySQL handler = new ExcelToMySQL();
-            ExcelToMySQL dbhandler = new ExcelToMySQL();
 
             if (handler.OpenCampaign(filePath, password, campaign, "May 2018") == true)
             {
-                dbhandler.CreateStringTable("bancroft_master", handler.GetMasterHeaders()).Close();
-                dbhandler.CreateStringTable("bancroft_month", handler.GetMonthHeader()).Close();
+                Debug.WriteLine("Successful opening of campaign");
+                handler.ExcelToCSVToMySQL();
             }
-
-            dbhandler.LoadCSV(@"C:\\\Users\\\data\\\Desktop\\\BancroftMaster.csv", "bancroft_master");
-            dbhandler.LoadCSV(@"C:\\\Users\\\data\\\Desktop\\\BancroftMonth.csv", "bancroft_month");
-        }
-
-        // Okay, we have our csv files. Let's import this baby into SQL
-        //
-
-        //string[] cols = { "First Name","Last Name","Telephone","DIAL","Alt#","Email","DOB/Age","Last Visit","Resolution","Date","Time","Notes","Call Back Date","CC Type","Provider","Insurance","Update","CBP Date" };
-        //MySqlDataReader reader2 = dbhandler.CreateStringTable("Diablo_Month", cols);
-        // reader2.Close();
-
-        /**
-        MySqlDataReader reader = dbhandler.QueryDB(@"LOAD DATA INFILE 'C:\\\Users\\\Data\\\Desktop\\\DiabloMonth.csv' INTO TABLE test.Diablo_Month FIELDS TERMINATED BY ',' IGNORE 2 LINES;");
-        while (reader.Read())
-        {
-            for(int i = 0; i < reader.FieldCount; i++)
+            else
             {
-                Debug.WriteLine(reader.GetString(i));
+                Debug.WriteLine("Could not open campaign");
             }
+
+            Debug.WriteLine("FINISHED IMPORTING");
+            
         }
-        **/
-
-
-        //List<string>[] output = dbconnection.Select("SELECT * FROM logmeins", 39, 26 );
-
-        //List<string>[] output = dbconnection.Select(@"LOAD DATA INFILE 'C:\Users\data\Desktop\DiabloMaster.csv' INTO TABLE test.")
-        //for (int i = 0; i < output.Length; i++)
-        //{
-        //    MessageBox.Show(output[i].ToArray()[0]);
-        //}
-        //xlApp.Quit();
    
         public void oledb()
         {

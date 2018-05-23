@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,6 +72,7 @@ namespace DentalMedical
         {
             if (this.IsConnect())
             {
+                Debug.WriteLine("Connected to SQL. Attempting to create string table");
                 string command = "CREATE TABLE " + tableName + " (`" + columnHeaders[0] + "` VARCHAR(255) ";
                 for(int i = 1; i < columnHeaders.Length; i++)
                 {
@@ -84,6 +86,8 @@ namespace DentalMedical
                 //dbCon.Close();
                 return reader;
             }
+
+            Debug.WriteLine("Could not connect to SQL");
             return null;
         }
         
