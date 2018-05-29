@@ -82,6 +82,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="PIMACampaign.cs" />
+    <Compile Include="ReadExcelData.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -102,6 +104,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MySQLHandler.cs" />
     <Compile Include="OLEDBConnection.cs" />
     <Compile Include="OpenXMLSDK.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

@@ -11,24 +11,26 @@ namespace DentalMedical
 {
     public class ExcelCampaign : ExcelHandler
     {
-        private string Title { get; set; }
-        private string Month { get; set; }
-        ArrayList monthHeaders { get; set; }
-        ArrayList masterHeaders { get; set; }
-        Worksheet masterSheet { get; set; }
-        Worksheet monthSheet { get; set; }
+        public string headerFlag;
+        public int numberOfColumns;
 
-        public ExcelCampaign(Application xlApp, string password, string path, string title, string month) : base(xlApp, password, path)
+        public string Title { get; set; }
+        public string Month { get; set; }
+        public ArrayList monthHeaders { get; set; }
+        public ArrayList masterHeaders { get; set; }
+        public Worksheet masterSheet { get; set; }
+        public Worksheet monthSheet { get; set; }
+
+        public ExcelCampaign(Application xlApp, string password, string path, string title, string month) : base(xlApp, path, password)
         {
             Title = title;
             Month = month;
-
+            headerFlag = "First Name";
+            numberOfColumns = 13;
             try
             {
                 masterSheet = GetSheet("Master");
                 monthSheet = GetSheet(Month);
-                
-                
             }
             catch (Exception e) 
             {
@@ -37,14 +39,19 @@ namespace DentalMedical
             }
         }
 
-        public ArrayList[] ExportHeaders(string exportPath = "")
+        
+
+        /**
+         * TODO: This is unnecessary and confusing since it does two things at one time. Needs to be split up
+         * and the Headers need to get their own individual return functions with error handling */
+        public ArrayList[] ExportHeaders(string firstHeader = "First Name", int lastColIndex = 13, string exportPath = "")
         {
             ArrayList[] headers = new ArrayList[2];
 
             if (masterHeaders == null)
-                masterHeaders = GetHeaders(masterSheet, "First Name");
+                masterHeaders = GetHeaders(masterSheet, firstHeader, lastColIndex);
             if (monthHeaders == null)
-                monthHeaders = GetHeaders(masterSheet, "First Name");
+                monthHeaders = GetHeaders(monthSheet, firstHeader, lastColIndex);
 
             headers[0] = monthHeaders;
             headers[1] = masterHeaders;

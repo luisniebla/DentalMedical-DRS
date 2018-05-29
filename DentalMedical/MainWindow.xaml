@@ -24,12 +24,12 @@
             <RowDefinition Height="4*"/>
         </Grid.RowDefinitions>
         <Button Content="Search" HorizontalAlignment="Left" Margin="20,90,0,0" Width="75" Click="Button_Click" Height="25" VerticalAlignment="Top"/>
-        <TextBox x:Name="TextBoxSearchCriteria" HorizontalAlignment="Left" Height="25" Margin="100,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="95" Text="Diablo" TabIndex="1"/>
+        <TextBox x:Name="TextBoxSearchCriteria" HorizontalAlignment="Left" Height="25" Margin="100,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="95" Text="THC" TabIndex="1"/>
         <Label x:Name="LabelSearchNotification" Content="" HorizontalAlignment="Left" Height="25" Margin="115,90,0,0" VerticalAlignment="Top" Width="45"/>
         <ListBox x:Name="listBoxSearchResults" Margin="10,246,10,10" ScrollViewer.HorizontalScrollBarVisibility="Visible" Grid.ColumnSpan="2"
                  />
         <Button x:Name="BtnOpenSelected" Content="Open" Height="20" Margin="8,0,0,92" VerticalAlignment="Bottom" Click="BtnOpenSelected_Click" HorizontalAlignment="Left" Width="56"/>
-        <TextBox x:Name="TextBoxPassword" HorizontalAlignment="Left" Height="25" Margin="85,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" Text="DIAB1" TabIndex="2"/>
+        <TextBox x:Name="TextBoxPassword" HorizontalAlignment="Left" Height="25" Margin="85,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" Text="PIMA1" TabIndex="2"/>
         <Label Content="Password" HorizontalAlignment="Left" Height="25" Margin="20,45,0,0" VerticalAlignment="Top" Width="65"/>
         <Label Content="Campaign" HorizontalAlignment="Left" Height="25" Margin="20,8,0,0" VerticalAlignment="Top" Width="75"/>
         <ListBox x:Name="listBoxTables" HorizontalAlignment="Right" Height="231" Margin="0,10,10,0" VerticalAlignment="Top" Width="105" SelectionChanged="listBoxSQLTables_SelectionChanged" Grid.Column="1"/>

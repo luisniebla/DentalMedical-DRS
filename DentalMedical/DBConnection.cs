@@ -31,7 +31,6 @@ namespace DentalMedical
         {
             get { return connection; }
         }
-        
 
         public bool IsConnect()
         {
@@ -86,7 +85,6 @@ namespace DentalMedical
             }
             return null;
         }
-        
         
         public string ConstructTableSchemaString(string[] columnHeaders, string[] columnDataTypes)
         {

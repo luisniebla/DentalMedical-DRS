@@ -1,4 +1,5 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using ExcelDataReader;
+using Microsoft.Office.Interop.Excel;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections;
@@ -58,9 +59,10 @@ namespace DentalMedical
 
             return output;
         }
-        public string[] GetMonthHeader()
+
+        public string[] GetMonthHeader(string firstHeader = "First Name")
         {
-            ArrayList headers = selectedCampaign.ExportHeaders()[0];
+            ArrayList headers = selectedCampaign.ExportHeaders(firstHeader)[0];
             return ConvertArrayListToStringList(headers);
         }
 
@@ -74,6 +76,7 @@ namespace DentalMedical
 
             return headerStrings;
         }
+
         public string[] GetMasterHeaders()
         {
             ArrayList headers =  selectedCampaign.ExportHeaders()[1];
@@ -131,6 +134,5 @@ namespace DentalMedical
         {
             xlApp.Quit();
         }
-        
     }
 }

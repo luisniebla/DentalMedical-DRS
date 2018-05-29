@@ -67,7 +67,7 @@ namespace DentalMedical
         /// </para>
         /// </summary>
         /// <returns></returns>
-        public ArrayList GetHeaders(Worksheet sheet, string columnAHeaderString = "", int deletionLimit = 20)
+        public ArrayList GetHeaders(Worksheet sheet, string columnAHeaderString = "", int lastColIndex = 13 ,int deletionLimit = 20)
         {
             int headerRow = 1;
 
@@ -96,25 +96,26 @@ namespace DentalMedical
                         sheet.Range["A" + 1].EntireRow.Delete();
                     }
 
-                    return ReadRow(sheet, 1);
+                    return ReadRow(sheet, 1, lastColIndex);
              }
             else
             {
                 return null;
             }
-            
         }
 
         // TODO: Use Sheet naem instead of WOrksheet
-        public ArrayList ReadRow(Worksheet sheet, int row)
+        public ArrayList ReadRow(Worksheet sheet, int row, int lastCol)
         {
             ArrayList values = new ArrayList();
             
-            for(int colIndex = 1; colIndex <= GetLastColumn(sheet); colIndex++)
+            for(int colIndex = 1; colIndex <= lastCol; colIndex++)
             {
+                if (sheet.Cells[row, colIndex].Value == "")
+                    Debug.WriteLine("WARNING: Could not find a column header for colIndex " + colIndex);
                 values.Add(sheet.Cells[row, colIndex].Value);
             }
-            values[3] = "DIAL";
+            
             return values;
         }
         /// <summary>

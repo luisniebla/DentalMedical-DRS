@@ -84,17 +84,17 @@ namespace DentalMedical
             string campaign = TextBoxSearchCriteria.Text;
             string filePath = listBoxSearchResults.SelectedItem.ToString();
 
-            ExcelToMySQL handler = new ExcelToMySQL();
-            ExcelToMySQL dbhandler = new ExcelToMySQL();
+            // Excel.Application is too slow. Let's try something else.
+            Excel.Application xlApp = new Excel.Application();
 
-            if (handler.OpenCampaign(filePath, password, campaign, "May 2018") == true)
-            {
-                dbhandler.CreateStringTable("bancroft_master", handler.GetMasterHeaders()).Close();
-                dbhandler.CreateStringTable("bancroft_month", handler.GetMonthHeader()).Close();
-            }
+            PIMACampaign thc = new PIMACampaign(xlApp, "PIMA1", filePath, "THC", "May 2018");
 
-            dbhandler.LoadCSV(@"C:\\\Users\\\data\\\Desktop\\\BancroftMaster.csv", "bancroft_master");
-            dbhandler.LoadCSV(@"C:\\\Users\\\data\\\Desktop\\\BancroftMonth.csv", "bancroft_month");
+            Debug.WriteLine(thc.HeadersToString());
+
+            thc.close();
+
+            xlApp.Quit();
+
         }
 
         // Okay, we have our csv files. Let's import this baby into SQL
