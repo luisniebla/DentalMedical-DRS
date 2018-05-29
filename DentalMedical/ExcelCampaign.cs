@@ -21,6 +21,9 @@ namespace DentalMedical
         public Worksheet masterSheet { get; set; }
         public Worksheet monthSheet { get; set; }
 
+        public ExcelCampaign() {; }
+
+
         public ExcelCampaign(Application xlApp, string password, string path, string title, string month) : base(xlApp, path, password)
         {
             Title = title;

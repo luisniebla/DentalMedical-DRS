@@ -53,6 +53,7 @@ namespace DentalMedical
             return true;
         }
 
+        
         public MySqlDataReader QueryDB(string command)
         {
             if (this.IsConnect())
@@ -61,6 +62,7 @@ namespace DentalMedical
 
                 var reader = cmd.ExecuteReader();
                 //dbCon.Close();
+
                 return reader;
             }
             return null;

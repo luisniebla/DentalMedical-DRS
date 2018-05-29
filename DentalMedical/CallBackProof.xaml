@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Title="CallBackProof" Height="450" Width="800">
     <Grid>
-        <DataGrid HorizontalAlignment="Left" Height="190" Margin="30,180,0,0" VerticalAlignment="Top" Width="450"/>
+        <DataGrid x:Name="DataGridCBP" ItemsSource="{Binding}" HorizontalAlignment="Left" Height="205" Margin="10,10,0,0" VerticalAlignment="Top" Width="772"/>
+        <DataGrid x:Name="DataGridExcel" ItemsSource="{Binding}" HorizontalAlignment="Left" Height="193" Margin="10,220,0,0" VerticalAlignment="Top" Width="772"/>
 
     </Grid>
 </Window>

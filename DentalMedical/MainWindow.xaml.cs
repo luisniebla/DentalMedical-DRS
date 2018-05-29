@@ -82,19 +82,27 @@ namespace DentalMedical
 
             string password = TextBoxPassword.Text;
             string campaign = TextBoxSearchCriteria.Text;
-            string filePath = listBoxSearchResults.SelectedItem.ToString();
-
+            string filePath = "";
+            try
+            {
+                filePath = listBoxSearchResults.SelectedItem.ToString();
+            }catch(NullReferenceException)
+            {
+                Debug.WriteLine("Didn't select an item in the lisbox");
+                
+            }
             // Excel.Application is too slow. Let's try something else.
+
             Excel.Application xlApp = new Excel.Application();
 
             PIMACampaign thc = new PIMACampaign(xlApp, password, filePath, campaign, "May-Merge 2018");
 
             Debug.WriteLine(thc.HeadersToString());
-
             thc.AttemptCallBackProof();
             thc.close();
 
-            xlApp.Quit();
+            //xlApp.Quit();
+            
 
         }
 

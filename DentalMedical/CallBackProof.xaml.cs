@@ -22,6 +22,7 @@ namespace DentalMedical
         public CallBackProof()
         {
             InitializeComponent();
+            
         }
     }
 }

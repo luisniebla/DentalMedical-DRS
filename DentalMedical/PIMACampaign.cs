@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,10 @@ namespace DentalMedical
         private int numberOfColumns;
         private string firstHeaderString;
 
+        public PIMACampaign()
+        {
+
+        }
         public PIMACampaign(Application xlApp, string password, string path, string title, string month ) : base( xlApp,  password,  path,  title,  month)
         {
             numberOfColumns = 26;
@@ -50,6 +55,22 @@ namespace DentalMedical
             CallBackProof cbp = new CallBackProof();
             cbp.Show();
 
+            DBConnection db = new DBConnection();
+
+            if (db.IsConnect())
+            {
+                var dt = new System.Data.DataTable();
+                dt.Load(db.QueryDB("SELECT * FROM pima_westside_cbp_master_results_52918;"));
+                cbp.DataGridCBP.DataContext = dt.DefaultView;
+                cbp.DataGridCBP.UpdateLayout();
+
+
+            }
+            else
+            {
+                Debug.WriteLine("Could not connect to DB");
+                throw new Exception("Could not connec to DB");
+            }
             
         }
     }
