@@ -5,6 +5,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Office.Interop.Excel;
 
@@ -64,15 +65,29 @@ namespace DentalMedical
                 cbp.DataGridCBP.DataContext = dt.DefaultView;
                 cbp.DataGridCBP.UpdateLayout();
                 DataRow[] tbl = dt.Select();
+                int totalMatches = 0;
+                // TODO: For each row, find the corresponding range location in Excel, and update the Excel sheet accordingly.
                 foreach (DataRow row in dt.Rows)
                 {
                     string personNumber = row.Field<string>(1);
+                    
                     int lastRow = GetLastRow("May-Merge 2018");
                     Range found = monthSheet.Range["B1", "B" + lastRow].Find(personNumber, LookAt:XlLookAt.xlWhole);
                     if (found != null)
+                    {
                         cbp.TextBlockExcel.Text += found.Value + " | ";
+                        totalMatches++;
+                    }
+                        
 
-                    
+                    // TODO: The program will do its best to try and do the callback proof, then the user just proofs it.
+                    string note = row.Field<string>(9);
+                    Regex FindRelevantNote = new Regex(@".*[(][0-9]{4}[1][8][A-Z][A-Z][)]\s+[^(].*");
+                    if (FindRelevantNote.IsMatch(note))
+                        row.SetField<string>(8, "MATCH");
+                    else
+                        row.SetField<string>(8, "NO MATCH");
+
                 }
 
             }
@@ -81,8 +96,8 @@ namespace DentalMedical
                 Debug.WriteLine("Could not connect to DB");
                 throw new Exception("Could not connec to DB");
             }
-            
-            
+
+            Debug.WriteLine("DONE");
         }
     }
 }
