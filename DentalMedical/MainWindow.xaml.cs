@@ -87,10 +87,11 @@ namespace DentalMedical
             // Excel.Application is too slow. Let's try something else.
             Excel.Application xlApp = new Excel.Application();
 
-            PIMACampaign thc = new PIMACampaign(xlApp, "PIMA1", filePath, "THC", "May 2018");
+            PIMACampaign thc = new PIMACampaign(xlApp, password, filePath, campaign, "May-Merge 2018");
 
             Debug.WriteLine(thc.HeadersToString());
 
+            thc.AttemptCallBackProof();
             thc.close();
 
             xlApp.Quit();

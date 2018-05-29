@@ -24,7 +24,7 @@
             <RowDefinition Height="4*"/>
         </Grid.RowDefinitions>
         <Button Content="Search" HorizontalAlignment="Left" Margin="20,90,0,0" Width="75" Click="Button_Click" Height="25" VerticalAlignment="Top"/>
-        <TextBox x:Name="TextBoxSearchCriteria" HorizontalAlignment="Left" Height="25" Margin="100,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="95" Text="THC" TabIndex="1"/>
+        <TextBox x:Name="TextBoxSearchCriteria" HorizontalAlignment="Left" Height="25" Margin="100,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="95" Text="Westside" TabIndex="1"/>
         <Label x:Name="LabelSearchNotification" Content="" HorizontalAlignment="Left" Height="25" Margin="115,90,0,0" VerticalAlignment="Top" Width="45"/>
         <ListBox x:Name="listBoxSearchResults" Margin="10,246,10,10" ScrollViewer.HorizontalScrollBarVisibility="Visible" Grid.ColumnSpan="2"
                  />

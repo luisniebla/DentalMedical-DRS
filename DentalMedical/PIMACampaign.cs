@@ -25,9 +25,10 @@ namespace DentalMedical
         public string HeadersToString()
         {
             string headerString = "";
-            foreach (object header in ExportHeaders("Provider", 26)[0])
+            foreach (object header in ExportHeaders("Provider", 25)[0])
             {
-                headerString += header.ToString() + "|";
+                if (header != null)
+                    headerString += header.ToString() + "|";
             }
             return headerString;
         }
@@ -35,12 +36,21 @@ namespace DentalMedical
         /// <summary>
         /// Attempt to do a call back proof
         /// Prerequisites:
-        /// - The found_appts table has been matched
-        /// - 
+        /// - The found_appts tables (master and month) have been created on sql server
+        ///     - This is just so we can easily read through it... not totally necessary i suppose, but one step at a time.
+        /// 
+        /// Goals:
+        /// - A user should be able to cross-proof the existing Excel database with the found matches.
+        /// - A user should be able to update the excel database by telling it whether it's an appointment or not.
+        /// 
         /// </summary>
         public void AttemptCallBackProof()
         {
+            // TODO: Logmeins
+            CallBackProof cbp = new CallBackProof();
+            cbp.Show();
 
+            
         }
     }
 }
