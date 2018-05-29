@@ -56,14 +56,24 @@ namespace DentalMedical
             cbp.Show();
 
             DBConnection db = new DBConnection();
-
+            var dt = new System.Data.DataTable();
             if (db.IsConnect())
             {
-                var dt = new System.Data.DataTable();
-                dt.Load(db.QueryDB("SELECT * FROM pima_westside_cbp_master_results_52918;"));
+                
+                dt.Load(db.QueryDB("SELECT * FROM pima_westside_cbp_may_results_52918;"));
                 cbp.DataGridCBP.DataContext = dt.DefaultView;
                 cbp.DataGridCBP.UpdateLayout();
+                DataRow[] tbl = dt.Select();
+                foreach (DataRow row in dt.Rows)
+                {
+                    string personNumber = row.Field<string>(1);
+                    int lastRow = GetLastRow("May-Merge 2018");
+                    Range found = monthSheet.Range["B1", "B" + lastRow].Find(personNumber, LookAt:XlLookAt.xlWhole);
+                    if (found != null)
+                        cbp.TextBlockExcel.Text += found.Value + " | ";
 
+                    
+                }
 
             }
             else
@@ -71,6 +81,7 @@ namespace DentalMedical
                 Debug.WriteLine("Could not connect to DB");
                 throw new Exception("Could not connec to DB");
             }
+            
             
         }
     }

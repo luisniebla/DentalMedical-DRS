@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DentalMedical"
         mc:Ignorable="d"
-        Title="CallBackProof" Height="450" Width="800">
+        Title="CallBackProof" Height="663" Width="800">
     <Grid>
-        <DataGrid x:Name="DataGridCBP" ItemsSource="{Binding}" HorizontalAlignment="Left" Height="205" Margin="10,10,0,0" VerticalAlignment="Top" Width="772"/>
-        <DataGrid x:Name="DataGridExcel" ItemsSource="{Binding}" HorizontalAlignment="Left" Height="193" Margin="10,220,0,0" VerticalAlignment="Top" Width="772"/>
+        <DataGrid x:Name="DataGridCBP" ItemsSource="{Binding}" HorizontalAlignment="Left" Height="300" Margin="10,10,0,0" VerticalAlignment="Top" Width="772"/>
+        <TextBlock x:Name="TextBlockExcel" HorizontalAlignment="Left" Height="311" Margin="10,315,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="772"/>
 
     </Grid>
 </Window>

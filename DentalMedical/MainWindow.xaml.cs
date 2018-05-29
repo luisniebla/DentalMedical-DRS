@@ -101,7 +101,7 @@ namespace DentalMedical
             thc.AttemptCallBackProof();
             thc.close();
 
-            //xlApp.Quit();
+            xlApp.Quit();
             
 
         }
