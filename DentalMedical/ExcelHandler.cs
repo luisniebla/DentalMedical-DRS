@@ -159,9 +159,12 @@ namespace DentalMedical
             return sheet.UsedRange.Columns.Count;
         }
 
-        public void close()
+        public void close(string identifier = "")
         {
-            xlWorkbook.Close(SaveChanges: XlSaveAction.xlSaveChanges);
+            if (identifier == "")
+                xlWorkbook.Close(SaveChanges:XlSaveAction.xlDoNotSaveChanges);
+            else
+                xlWorkbook.Close(SaveChanges: XlSaveAction.xlSaveChanges, Filename: xlWorkbook.FullName + identifier + "." + xlWorkbook.FileFormat);
         }
     }
 }

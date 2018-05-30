@@ -40,13 +40,13 @@ namespace DentalMedical
             return headerString;
         }
 
-        public DataView GetCBPDataView()
+        public DataView GetCBPDataView(string sqlTableName)
         {
             
             DBConnection db = new DBConnection();
             if (db.IsConnect())
             {
-                dt.Load(db.QueryDB("SELECT * FROM pima_westside_cbp_may_results_52918;"));
+                dt.Load(db.QueryDB("SELECT * FROM " + sqlTableName + ";" ));
                 return dt.DefaultView;
             }
             else
@@ -68,6 +68,8 @@ namespace DentalMedical
         /// </summary>
         public int AttemptCallBackProof()
         {
+            dt.AcceptChanges();
+
             if (monthHeaders == null)
                 HeadersToString();  // Make sure to export those headers. Useful for later on when we access them directly.
 
@@ -76,17 +78,23 @@ namespace DentalMedical
             int updateColIndex = 24; //FindMonthColumnIndexByHeader("Update");
             int apptColIndex = 16;  // PIMA is special in that the appt date isn't unique, and there wouldbe an error if we searched like this.
             int newApptColorIndex = 50;
-            string updateStr = DateTime.Today.ToString() + " LNR";
+            string updateStr = DateTime.Today.ToShortDateString() + " LNR";
             string PtIdCol = "B";
 
+            int apptCount = 0;
+            int pendCount = 0;
+            int keepCount = 0;
+            int dataTableRowCount = 0;
             DataRow[] tbl = dt.Select();
             int totalMatches = 0;
             // TODO: For each row, find the corresponding range location in Excel, and update the Excel sheet accordingly.
             foreach (DataRow row in dt.Rows)
             {
+                dataTableRowCount++;
+
                 string personNumber = row.Field<string>(1);
 
-                int lastRow = GetLastRow("May-Merge 2018");
+                int lastRow = GetLastRow(Month);
                 Range found = monthSheet.Range[PtIdCol + "1", PtIdCol + lastRow].Find(personNumber, LookAt: XlLookAt.xlWhole);
                 if (found != null)
                 {
@@ -106,6 +114,7 @@ namespace DentalMedical
                             monthSheet.Cells[found.Row, updateColIndex] = updateStr;
                             monthSheet.Cells[found.Row, notesColIndex].Interior.ColorIndex = newApptColorIndex;
                             monthSheet.Cells[found.Row, apptColIndex] = appt;
+                            apptCount++;
                             break;
                         // Process pend/previous
                         case "":
@@ -113,14 +122,15 @@ namespace DentalMedical
                             monthSheet.Cells[found.Row, resColIndex].Interior.ColorIndex = 0;
                             monthSheet.Cells[found.Row, updateColIndex] = updateStr;
                             monthSheet.Cells[found.Row, apptColIndex] = appt;
+                            pendCount++;
                             break;
                         // Don't change the resolutions, just add new appt
                         case "K":
                             monthSheet.Cells[found.Row, updateColIndex] = updateStr;
                             monthSheet.Cells[found.Row, resColIndex].Interior.ColorIndex = 0;
                             monthSheet.Cells[found.Row, apptColIndex] = appt;
+                            keepCount++;
                             break;
-                            
                     }
                     totalMatches++;
                 }
@@ -129,6 +139,13 @@ namespace DentalMedical
                     MessageBox.Show("WARNING: Could not find " + personNumber + " in Worksheet");
                 }
             }
+            MessageBox.Show("Number of rows in Data Table " + dataTableRowCount
+                + "\n Number of matches found in Excel: " + totalMatches
+                + "\n Number of changed Appts: " + apptCount
+                + "\n Number of changed Pend/Prev: " + pendCount
+                + "\n Number of kept resolutions: " + keepCount
+                );
+
             
             return totalMatches;
         }

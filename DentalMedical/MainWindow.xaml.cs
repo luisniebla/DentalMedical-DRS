@@ -97,14 +97,13 @@ namespace DentalMedical
 
             xlApp = new Excel.Application();
 
-            thc = new PIMACampaign(xlApp, password, filePath, campaign, "May-Merge 2018");
+            thc = new PIMACampaign(xlApp, password, filePath, campaign, "May 2018");
 
             Debug.WriteLine(thc.HeadersToString());
-            DGCBP.DataContext = thc.GetCBPDataView();
+            
+            DGCBP.DataContext = thc.GetCBPDataView("pima_thc_cbp_may_results_52918");
             DGCBP.UpdateLayout();
-            //thc.close();
-
-            //sxlApp.Quit();
+            
             
 
         }
@@ -151,14 +150,15 @@ namespace DentalMedical
 
         private void App_Close(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            
+            if (thc != null)
+                thc.close();
         }
 
         private void BtnCBP_Click(object sender, RoutedEventArgs e)
         {
             int rsults = thc.AttemptCallBackProof();
             Debug.WriteLine("DONE WITH CBP");
-            thc.close();
+            thc.close("Post_CBP");
         }
     }
 }
