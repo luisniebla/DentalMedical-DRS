@@ -70,8 +70,7 @@ namespace DentalMedical
         public ArrayList GetHeaders(Worksheet sheet, string columnAHeaderString = "", int lastColIndex = 13 ,int deletionLimit = 20)
         {
             int headerRow = 1;
-
-            // 
+            
             if (columnAHeaderString == "")
             {
                 while (sheet.Range["A" + headerRow].Value == "" && headerRow < deletionLimit)
@@ -153,18 +152,16 @@ namespace DentalMedical
             return lastUsedRow;
         }
         
-        // TODO: Use string instead of WOrksheet parameter
-        public int GetLastColumn(Worksheet sheet)
-        {
-            return sheet.UsedRange.Columns.Count;
-        }
-
+        /// <summary>
+        /// Close the Excel workbook.
+        /// </summary>
+        /// <param name="identifier">Give the option  </param>
         public void close(string identifier = "")
         {
             if (identifier == "")
                 xlWorkbook.Close(SaveChanges:XlSaveAction.xlDoNotSaveChanges);
             else
-                xlWorkbook.Close(SaveChanges: XlSaveAction.xlSaveChanges, Filename: xlWorkbook.FullName + identifier + "." + xlWorkbook.FileFormat);
+                xlWorkbook.Close(SaveChanges: XlSaveAction.xlSaveChanges, Filename: @"U:\Call Campaigns\ZZ_Merge & CBP RawData\CallBackProof Data\060118\PIMA_THC\" + xlWorkbook.Name + identifier + "." + xlWorkbook.FileFormat);
         }
     }
 }
