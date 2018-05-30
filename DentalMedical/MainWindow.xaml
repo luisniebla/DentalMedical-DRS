@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DentalMedical"
         mc:Ignorable="d"
-        Title="MainWindow" Height="363.402" Width="588.6" Closing="App_Close">
+        Title="MainWindow" Height="613.531" Width="603.6" Closing="App_Close">
     <Grid Height="353" VerticalAlignment="Top" Margin="0,0,-8,0" RenderTransformOrigin="0.5,0.5">
         <Grid.RenderTransform>
             <TransformGroup>
@@ -24,7 +24,7 @@
             <RowDefinition Height="4*"/>
         </Grid.RowDefinitions>
         <Button Content="Search" HorizontalAlignment="Left" Margin="20,90,0,0" Width="75" Click="Button_Click" Height="25" VerticalAlignment="Top"/>
-        <TextBox x:Name="TextBoxSearchCriteria" HorizontalAlignment="Left" Height="25" Margin="100,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="95" Text="THC" TabIndex="1"/>
+        <TextBox x:Name="TextBoxSearchCriteria" HorizontalAlignment="Left" Height="25" Margin="100,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="95" Text="Westside" TabIndex="1"/>
         <Label x:Name="LabelSearchNotification" Content="" HorizontalAlignment="Left" Height="25" Margin="115,90,0,0" VerticalAlignment="Top" Width="45"/>
         <ListBox x:Name="listBoxSearchResults" Margin="10,246,10,10" ScrollViewer.HorizontalScrollBarVisibility="Visible" Grid.ColumnSpan="2"
                  />
@@ -34,6 +34,8 @@
         <Label Content="Campaign" HorizontalAlignment="Left" Height="25" Margin="20,8,0,0" VerticalAlignment="Top" Width="75"/>
         <ListBox x:Name="listBoxTables" HorizontalAlignment="Right" Height="231" Margin="0,10,10,0" VerticalAlignment="Top" Width="105" SelectionChanged="listBoxSQLTables_SelectionChanged" Grid.Column="1"/>
         <TextBlock x:Name="TextBlockCampaignInfo" HorizontalAlignment="Left" Height="85" Margin="10,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="305" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+        <DataGrid x:Name="DGCBP" ItemsSource="{Binding}" Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="218" Margin="10,0,0,-198" Grid.Row="1" VerticalAlignment="Top" Width="584"/>
+        <Button x:Name="BtnCBP" Content="Call Back Proof" HorizontalAlignment="Left" Height="24" Margin="10,223,0,-227" Grid.Row="1" VerticalAlignment="Top" Width="140" Click="BtnCBP_Click"/>
 
     </Grid>
 </Window>

@@ -24,7 +24,7 @@ namespace DentalMedical
             try
             {
                 dict = new Dictionary<string, Worksheet>();
-                xlWorkbook = xlApplication.Workbooks.Open(filePath, Password: password, ReadOnly: true);
+                xlWorkbook = xlApplication.Workbooks.Open(filePath, Password: password, ReadOnly: false);
                 xlWorkbook.Unprotect();
                 
                 foreach (Worksheet worksheet in xlWorkbook.Worksheets)
@@ -161,7 +161,7 @@ namespace DentalMedical
 
         public void close()
         {
-            xlWorkbook.Close();
+            xlWorkbook.Close(SaveChanges: XlSaveAction.xlSaveChanges);
         }
     }
 }
