@@ -97,11 +97,11 @@ namespace DentalMedical
 
             xlApp = new Excel.Application();
 
-            thc = new PIMACampaign(xlApp, password, filePath, campaign, "May 2018");
+            thc = new PIMACampaign(xlApp, password, filePath, campaign, "June 2018");
 
             Debug.WriteLine(thc.HeadersToString());
             
-            DGCBP.DataContext = thc.GetCBPDataView("pima_thc_cbp_may_results_52918");
+            DGCBP.DataContext = thc.GetCBPDataView("pima_eastside_cbp_june_results_53018");
             DGCBP.UpdateLayout();
             
             

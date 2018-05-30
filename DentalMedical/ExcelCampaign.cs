@@ -20,10 +20,8 @@ namespace DentalMedical
         public ArrayList masterHeaders { get; set; }
         public Worksheet masterSheet { get; set; }
         public Worksheet monthSheet { get; set; }
-
-        public ExcelCampaign() {; }
-
-
+        
+        
         public ExcelCampaign(Application xlApp, string password, string path, string title, string month) : base(xlApp, path, password)
         {
             Title = title;
@@ -65,23 +63,27 @@ namespace DentalMedical
             {
                 // TODO: Verify that this works across all databases
                 // Works on: Diablo
-                int lastMasterRow = GetLastRow("Master");
-                int lastMonthRow = GetLastRow("May 2018");
-
-                masterSheet.Range["A1:Z" + lastMasterRow].Replace(",","");
-                masterSheet.Select();
-                xlWorkbook.SaveAs(string.Format("{0}{1}{2}.csv", exportPath, Title, "Master"), XlFileFormat.xlCSVWindows, XlSaveAsAccessMode.xlNoChange);
-                masterSheet.Range["A1:Z" + lastMonthRow].Replace(",", "");
-                monthSheet.Select();
-                xlWorkbook.SaveAs(string.Format("{0}{1}{2}.csv", exportPath, Title, "Month"), XlFileFormat.xlCSVWindows, XlSaveAsAccessMode.xlNoChange);
+                
                 
                 return headers;
             }
-            
         }
 
+        public void ExportCampaign(string exportPath)
+        {
+            // Grab the size of the datasets
+            int lastMasterRow = GetLastRow("Master");
+            int lastMonthRow = GetLastRow("May 2018");
+
+            masterSheet.Range["A1:Z" + lastMasterRow].Replace(",", ""); // It is very important that we not have commas anywhere in our data due to csv comma delimitter
+            masterSheet.Select();
+            xlWorkbook.SaveAs(string.Format("{0}{1}{2}.csv", exportPath, Title, "Master"), XlFileFormat.xlCSVWindows, XlSaveAsAccessMode.xlNoChange);
+            monthSheet.Range["A1:Z" + lastMonthRow].Replace(",", "");
+            monthSheet.Select();
+            xlWorkbook.SaveAs(string.Format("{0}{1}{2}.csv", exportPath, Title, "Month"), XlFileFormat.xlCSVWindows, XlSaveAsAccessMode.xlNoChange);
+        }
         /// <summary>
-        /// 
+        /// Given a column header, attempt to 
         /// </summary>
         /// <param name="header"></param>
         /// <returns></returns>
@@ -100,20 +102,30 @@ namespace DentalMedical
             }
             return -1;
         }
-        // TODO: Use SQL 
+
+        // New Philosophy: We should never delete things without explicit permission.
         public void CleanSheet(string sheetName, string firstCol, string firstColHeader) 
+        {
+            ;
+        }
+
+        /// <summary>
+        /// The Master sheet can sometimes contain a Do Not Call Above Line.
+        /// </summary>
+        /// <returns>The Worksheet row number of the DNC line. -1 if it is not found.</returns>
+        public int GetDNCRow()
         {
             Range dncLine = masterSheet.Range["A1", "A10"].Find("DO NOT CALL ABOVE LINE", MatchCase: false);
 
-            while (masterSheet.Range[firstCol + "1"].Value != "First Name")
+            if (dncLine == null)
             {
-                masterSheet.Range[firstCol + "1"].EntireRow.Delete();
+                Debug.WriteLine("WARNING: Could not find DNC line in Master");
+                return -1;
             }
-        }
-
-        public int GetDNCRow(string sheetName)
-        {
-            return 0;
+            else
+            {
+                return dncLine.Row;
+            }
         }
 
         

@@ -15,16 +15,11 @@ namespace DentalMedical
     class PIMACampaign : ExcelCampaign
     {
         private int numberOfColumns;
-        private string firstHeaderString;
         private System.Data.DataTable dt;
-        public PIMACampaign()
-        {
-
-        }
+        
         public PIMACampaign(Microsoft.Office.Interop.Excel.Application xlApp, string password, string path, string title, string month ) : base( xlApp,  password,  path,  title,  month)
         {
             numberOfColumns = 26;
-            firstHeaderString = "Provider";
             dt = new System.Data.DataTable();
             headerFlag = "Provider";
         }
@@ -32,7 +27,7 @@ namespace DentalMedical
         public string HeadersToString()
         {
             string headerString = "";
-            foreach (object header in ExportHeaders("Provider", 25)[0])
+            foreach (object header in ExportHeaders("Provider", numberOfColumns)[0])
             {
                 if (header != null)
                     headerString += header.ToString() + "|";
