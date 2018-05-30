@@ -42,6 +42,7 @@ namespace DentalMedical
 
         public DataView GetCBPDataView()
         {
+            
             DBConnection db = new DBConnection();
             if (db.IsConnect())
             {
@@ -67,34 +68,82 @@ namespace DentalMedical
         /// </summary>
         public int AttemptCallBackProof()
         {
-                DataRow[] tbl = dt.Select();
-                int totalMatches = 0;
-                // TODO: For each row, find the corresponding range location in Excel, and update the Excel sheet accordingly.
-                foreach (DataRow row in dt.Rows)
+            if (monthHeaders == null)
+                HeadersToString();  // Make sure to export those headers. Useful for later on when we access them directly.
+
+            int resColIndex = 15; //FindMonthColumnIndexByHeader("Resolution");
+            int notesColIndex = 20; //FindMonthColumnIndexByHeader("Notes");
+            int updateColIndex = 24; //FindMonthColumnIndexByHeader("Update");
+            int apptColIndex = 16;  // PIMA is special in that the appt date isn't unique, and there wouldbe an error if we searched like this.
+            int newApptColorIndex = 50;
+            string updateStr = DateTime.Today.ToString() + " LNR";
+            string PtIdCol = "B";
+
+            DataRow[] tbl = dt.Select();
+            int totalMatches = 0;
+            // TODO: For each row, find the corresponding range location in Excel, and update the Excel sheet accordingly.
+            foreach (DataRow row in dt.Rows)
+            {
+                string personNumber = row.Field<string>(1);
+
+                int lastRow = GetLastRow("May-Merge 2018");
+                Range found = monthSheet.Range[PtIdCol + "1", PtIdCol + lastRow].Find(personNumber, LookAt: XlLookAt.xlWhole);
+                if (found != null)
                 {
-                    string personNumber = row.Field<string>(1);
+                    string flag = row.Field<string>(8);
+                    string resolution = row.Field<string>(7);
+                    string appt = row.Field<string>(0);
+
                     
-                    int lastRow = GetLastRow("May-Merge 2018");
-                    Range found = monthSheet.Range["B1", "B" + lastRow].Find(personNumber, LookAt:XlLookAt.xlWhole);
-                    if (found != null)
+                    // Process the patient
+                    // TODO: Move the indexs and resolution to global variables accesss/whatever, and move these repetitive stuff into their own functions
+                    switch (flag)
                     {
-                        
-                        totalMatches++;
+                        // Process the appointment case
+                        case "A":
+                            monthSheet.Cells[found.Row, resColIndex] = "Appointment";
+                            monthSheet.Cells[found.Row, resColIndex].Interior.ColorIndex = 0;   // Clear the queue
+                            monthSheet.Cells[found.Row, updateColIndex] = updateStr;
+                            monthSheet.Cells[found.Row, notesColIndex].Interior.ColorIndex = newApptColorIndex;
+                            monthSheet.Cells[found.Row, apptColIndex] = appt;
+                            break;
+                        // Process pend/previous
+                        case "":
+                            monthSheet.Cells[found.Row, resColIndex] = "Pend/Previous Appt";
+                            monthSheet.Cells[found.Row, resColIndex].Interior.ColorIndex = 0;
+                            monthSheet.Cells[found.Row, updateColIndex] = updateStr;
+                            monthSheet.Cells[found.Row, apptColIndex] = appt;
+                            break;
+                        // Don't change the resolutions, just add new appt
+                        case "K":
+                            monthSheet.Cells[found.Row, updateColIndex] = updateStr;
+                            monthSheet.Cells[found.Row, resColIndex].Interior.ColorIndex = 0;
+                            monthSheet.Cells[found.Row, apptColIndex] = appt;
+                            break;
+                            
                     }
-
-                    // TODO: The program will do its best to try and do the callback proof, then the user just proofs it.
-                    string note = row.Field<string>(9);
-                    Regex FindRelevantNote = new Regex(@".*[(][0-9]{4}[1][8][A-Z][A-Z][)]\s+[^(].*");
-                    if (FindRelevantNote.IsMatch(note))
-                        row.SetField<string>(8, "MATCH");
-                    else
-                        row.SetField<string>(8, "NO MATCH");
+                    totalMatches++;
                 }
-
-
+                else
+                {
+                    MessageBox.Show("WARNING: Could not find " + personNumber + " in Worksheet");
+                }
+            }
+            
             return totalMatches;
         }
 
+
+        public void AttemptCBPRegex()
+        {
+            // TODO: The program will do its best to try and do the callback proof, then the user just proofs it.
+            //string note = row.Field<string>(9);
+            Regex FindRelevantNote = new Regex(@".*[(][0-9]{4}[1][8][A-Z][A-Z][)]\s+[^(].*");
+           // if (FindRelevantNote.IsMatch(note))
+                //row.SetField<string>(8, "MATCH");
+            //else
+                //row.SetField<string>(8, "NO MATCH");
+        }
         
     }
 }

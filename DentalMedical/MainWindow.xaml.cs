@@ -158,6 +158,7 @@ namespace DentalMedical
         {
             int rsults = thc.AttemptCallBackProof();
             Debug.WriteLine("DONE WITH CBP");
+            thc.close();
         }
     }
 }

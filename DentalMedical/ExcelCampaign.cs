@@ -47,7 +47,7 @@ namespace DentalMedical
         /**
          * TODO: This is unnecessary and confusing since it does two things at one time. Needs to be split up
          * and the Headers need to get their own individual return functions with error handling */
-        public ArrayList[] ExportHeaders(string firstHeader = "First Name", int lastColIndex = 13, string exportPath = "")
+        public ArrayList[] ExportHeaders(string firstHeader = "First Name", int lastColIndex = 30, string exportPath = "")
         {
             ArrayList[] headers = new ArrayList[2];
 
@@ -80,6 +80,26 @@ namespace DentalMedical
             
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="header"></param>
+        /// <returns></returns>
+        public int FindMonthColumnIndexByHeader(string header)
+        {
+            if (monthHeaders == null)
+            {
+                Debug.WriteLine("WARNING: Did not call ExportHeaders. Initial settings may be incorrect.");
+                monthHeaders = GetHeaders(monthSheet, "First Name", 22);
+            }
+            foreach (string column in monthHeaders)
+            {
+                if (column != null) // Sometimes the DIAL column doesn't have a header, it's fine.
+                    if (column.Contains(header))
+                         monthHeaders.IndexOf(column);
+            }
+            return -1;
+        }
         // TODO: Use SQL 
         public void CleanSheet(string sheetName, string firstCol, string firstColHeader) 
         {
