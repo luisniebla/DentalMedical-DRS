@@ -48,6 +48,7 @@ namespace DentalMedical
 
                 connection = new MySqlConnection(connectionString);
                 connection.Open();
+                
             }
 
             return true;

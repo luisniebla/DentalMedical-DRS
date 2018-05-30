@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 using Microsoft.Office.Interop.Excel;
 
 namespace DentalMedical
@@ -15,16 +16,16 @@ namespace DentalMedical
     {
         private int numberOfColumns;
         private string firstHeaderString;
-
+        private System.Data.DataTable dt;
         public PIMACampaign()
         {
 
         }
-        public PIMACampaign(Application xlApp, string password, string path, string title, string month ) : base( xlApp,  password,  path,  title,  month)
+        public PIMACampaign(Microsoft.Office.Interop.Excel.Application xlApp, string password, string path, string title, string month ) : base( xlApp,  password,  path,  title,  month)
         {
             numberOfColumns = 26;
             firstHeaderString = "Provider";
-
+            dt = new System.Data.DataTable();
             headerFlag = "Provider";
         }
 
@@ -39,6 +40,20 @@ namespace DentalMedical
             return headerString;
         }
 
+        public DataView GetCBPDataView()
+        {
+            DBConnection db = new DBConnection();
+            if (db.IsConnect())
+            {
+                dt.Load(db.QueryDB("SELECT * FROM pima_westside_cbp_may_results_52918;"));
+                return dt.DefaultView;
+            }
+            else
+            {
+                Debug.WriteLine("Could not read SQL");
+                return null;
+            }
+        }
         /// <summary>
         /// Attempt to do a call back proof
         /// Prerequisites:
@@ -50,20 +65,8 @@ namespace DentalMedical
         /// - A user should be able to update the excel database by telling it whether it's an appointment or not.
         /// 
         /// </summary>
-        public void AttemptCallBackProof()
+        public int AttemptCallBackProof()
         {
-            // TODO: Logmeins
-            CallBackProof cbp = new CallBackProof();
-            cbp.Show();
-
-            DBConnection db = new DBConnection();
-            var dt = new System.Data.DataTable();
-            if (db.IsConnect())
-            {
-                
-                dt.Load(db.QueryDB("SELECT * FROM pima_westside_cbp_may_results_52918;"));
-                cbp.DataGridCBP.DataContext = dt.DefaultView;
-                cbp.DataGridCBP.UpdateLayout();
                 DataRow[] tbl = dt.Select();
                 int totalMatches = 0;
                 // TODO: For each row, find the corresponding range location in Excel, and update the Excel sheet accordingly.
@@ -75,10 +78,9 @@ namespace DentalMedical
                     Range found = monthSheet.Range["B1", "B" + lastRow].Find(personNumber, LookAt:XlLookAt.xlWhole);
                     if (found != null)
                     {
-                        cbp.TextBlockExcel.Text += found.Value + " | ";
+                        
                         totalMatches++;
                     }
-                        
 
                     // TODO: The program will do its best to try and do the callback proof, then the user just proofs it.
                     string note = row.Field<string>(9);
@@ -87,17 +89,12 @@ namespace DentalMedical
                         row.SetField<string>(8, "MATCH");
                     else
                         row.SetField<string>(8, "NO MATCH");
-
                 }
 
-            }
-            else
-            {
-                Debug.WriteLine("Could not connect to DB");
-                throw new Exception("Could not connec to DB");
-            }
 
-            Debug.WriteLine("DONE");
+            return totalMatches;
         }
+
+        
     }
 }

@@ -7,8 +7,9 @@
         mc:Ignorable="d"
         Title="CallBackProof" Height="663" Width="800">
     <Grid>
-        <DataGrid x:Name="DataGridCBP" ItemsSource="{Binding}" HorizontalAlignment="Left" Height="300" Margin="10,10,0,0" VerticalAlignment="Top" Width="772"/>
-        <TextBlock x:Name="TextBlockExcel" HorizontalAlignment="Left" Height="311" Margin="10,315,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="772"/>
+        <DataGrid x:Name="DataGridCBP" ItemsSource="{Binding}" HorizontalAlignment="Left" Height="470" Margin="10,10,0,0" VerticalAlignment="Top" Width="772"/>
+        <TextBlock x:Name="TextBlockExcel" HorizontalAlignment="Left" Height="51" Margin="10,575,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="772"/>
+        <Button x:Name="BtnProcessCBP" Content="Process Call Back Proof" HorizontalAlignment="Left" Margin="10,485,0,0" VerticalAlignment="Top" Width="145"/>
 
     </Grid>
 </Window>
