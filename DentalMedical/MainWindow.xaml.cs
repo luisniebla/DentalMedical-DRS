@@ -91,7 +91,6 @@ namespace DentalMedical
             }catch(NullReferenceException)
             {
                 Debug.WriteLine("Didn't select an item in the lisbox");
-                
             }
             // Excel.Application is too slow. Let's try something else.
 

@@ -118,9 +118,9 @@ namespace DentalMedical
             return values;
         }
         /// <summary>
-        /// Return the worksheet
-        /// 
-        /// </summary>
+        /// Return the worksheet given a string
+        /// </summary
+        /// <returns>the Worksheet object. throws Exception if there was an error in getting worksheet</returns>
         public Worksheet GetSheet(string sheetName)
         {
             if (dict == null)
@@ -132,11 +132,10 @@ namespace DentalMedical
                 catch (Exception e)
                 {
                     Debug.WriteLine(e.ToString());
-                    return null;
+                    throw e;
                 }
             }
-
-
+            
             return dict[sheetName];
         }
 

@@ -11,7 +11,16 @@ using System.Windows;
 using Microsoft.Office.Interop.Excel;
 
 namespace DentalMedical
-{
+{ 
+    /// <summary>
+    /// TODO: There's a lot of potential for abstraction here
+    /// THat is to say, we have the lower-level methods for comparing data, changing data up, which columns which we change up
+    /// as parameters, and then have the higher order classes decide on those magic values, rather than making them magic 
+    /// values across the board.
+    /// 
+    /// TODO: It'd be nice if we could get some sort of algorithm in place to determine CBP. It's actually not that complex, 90% of situations are the same.
+    /// i.e. If all there are, are notes, then it's obviously a pend/previous.
+    /// </summary>
     class PIMACampaign : ExcelCampaign
     {
         private int numberOfColumns;
@@ -24,6 +33,10 @@ namespace DentalMedical
             headerFlag = "Provider";
         }
 
+        /// <summary>
+        /// Convert the PIMA campaign header to a string
+        /// </summary>
+        /// <returns>The PIMA column headers delimitted by a |</returns>
         public string HeadersToString()
         {
             string headerString = "";
@@ -35,9 +48,17 @@ namespace DentalMedical
             return headerString;
         }
 
+
+        /// <summary>
+        /// Query the database to select the entire table, sqlTableName
+        /// </summary>
+        /// <param name="sqlTableName">The SQL table to query</param>
+        /// <returns>
+        /// The DataView object representing the result from the SQL query
+        /// null if the database could not be connected to. Should I throw an error here? Probably...
+        /// </returns>
         public DataView GetCBPDataView(string sqlTableName)
         {
-            
             DBConnection db = new DBConnection();
             if (db.IsConnect())
             {
@@ -46,7 +67,8 @@ namespace DentalMedical
             }
             else
             {
-                Debug.WriteLine("Could not read SQL");
+                
+                 new Exception("Could not connect to SQL");
                 return null;
             }
         }
