@@ -97,6 +97,12 @@ namespace DentalMedical
 
             xlApp = new Excel.Application();
 
+            
+        }
+
+        
+        public void pimaCampaignCBP(string password, string filePath, string campaign)
+        {
             try
             {
                 thc = new PIMACampaign(xlApp, password, filePath, campaign, "May 2018");
@@ -106,11 +112,14 @@ namespace DentalMedical
 
                 DGCBP.DataContext = thc.GetCBPDataView("pima_greenvalley_cbp_may_results_53018");
                 DGCBP.UpdateLayout();
-            } catch (MySql.Data.MySqlClient.MySqlException mysqle) {
+            }
+            catch (MySql.Data.MySqlClient.MySqlException mysqle)
+            {
                 MessageBox.Show("Error during SQL transactions " + mysqle.ToString());
                 thc = null;
                 xlApp.Quit();
-            } catch (IndexOutOfRangeException ex)
+            }
+            catch (IndexOutOfRangeException ex)
             {
                 Debug.WriteLine(ex.ToString());
                 MessageBox.Show("Could not find column headers");
@@ -118,9 +127,6 @@ namespace DentalMedical
                 xlApp.Quit();
             }
         }
-
-        
-   
         public void oledb()
         {
             using (OleDbConnection conn = new OleDbConnection())

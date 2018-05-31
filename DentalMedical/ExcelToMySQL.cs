@@ -17,12 +17,12 @@ namespace DentalMedical
 {
     class ExcelToMySQL : DBConnection
     {
-        Excel.Application xlApp = new Excel.Application();
-        ExcelCampaign selectedCampaign;
+        private Excel.Application xlApp;
+        public ExcelCampaign selectedCampaign;
 
         public ExcelToMySQL()
         {
-            ;
+            xlApp = new Excel.Application();
         }
 
         public bool OpenCampaign(string filePath, string password, string title, string monthSheet)
@@ -30,7 +30,7 @@ namespace DentalMedical
             // Let's try opening this workbook
             try
             {
-                selectedCampaign = new ExcelCampaign(xlApp, filePath, password, title, "May 2018");
+                selectedCampaign = new ExcelCampaign(xlApp, filePath, password, title, monthSheet);
             }
             catch (Exception ex)
             {
