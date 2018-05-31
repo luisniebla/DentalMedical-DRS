@@ -48,25 +48,33 @@ namespace DentalMedical
 
                 connection = new MySqlConnection(connectionString);
                 connection.Open();
-                
             }
 
             return true;
         }
 
-        
+
         public MySqlDataReader QueryDB(string command)
         {
-            if (this.IsConnect())
+            try
             {
-                var cmd = new MySqlCommand(command, connection);
+                if (this.IsConnect())
+                {
+                    var cmd = new MySqlCommand(command, connection);
 
-                var reader = cmd.ExecuteReader();
-                //dbCon.Close();
+                    var reader = cmd.ExecuteReader();
+                    //dbCon.Close();
 
-                return reader;
+                    return reader;
+                }
+            }
+            catch (MySqlException ex)
+            {
+                throw ex;
             }
             return null;
+            
+            
         }
 
         public MySqlDataReader CreateStringTable(string tableName, string[] columnHeaders)

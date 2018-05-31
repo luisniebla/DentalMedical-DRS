@@ -65,8 +65,10 @@ namespace DentalMedical
         /// columnAHeaderString: if empty, then use the first non-empty row as the headers. Else, delete everything until columnAHeaderString is found
         /// deletionLimit: If we delete more than this number of rows, return null arraylist
         /// </para>
+        /// TODO: We should break this down even further, with a "temp" header that is returned as the first non-blank value in a given column
+        /// TODO: After first non-blank value is found, this is set as header, and parents can decide if it's the header they want, or they can skip that header and move on to the next non-blank cell
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The ArrayList consisting of the headers for the sheet</returns>
         public ArrayList GetHeaders(Worksheet sheet, string columnAHeaderString = "", int lastColIndex = 13 ,int deletionLimit = 20)
         {
             int headerRow = 1;
@@ -87,24 +89,27 @@ namespace DentalMedical
             }
 
             // Don't delete the rows if we exceed the deletion limit.
-            // Now that I think about it, deletion isn't really necessary... but I guess we might as well
+            // Deletion is not necessary
             if (headerRow < deletionLimit)
             {
-                    for (int j = 1; j < headerRow; j++)
-                    {
-                        sheet.Range["A" + 1].EntireRow.Delete();
-                    }
-
-                    return ReadRow(sheet, 1, lastColIndex);
-             }
+                return ReadRow(sheet, headerRow, lastColIndex);
+            }
             else
             {
-                return null;
+                throw new IndexOutOfRangeException("Could not find the header within " + deletionLimit + " rows");
             }
         }
 
-        // TODO: Use Sheet naem instead of WOrksheet
-        public ArrayList ReadRow(Worksheet sheet, int row, int lastCol)
+        
+    // TODO: Use Sheet naem instead of WOrksheet
+    /// <summary>
+    /// Read a row for an Excel worksheet.
+    /// </summary>
+    /// <param name="sheet">Worksheet object to access</param>
+    /// <param name="row">The row number to read. Starts at 1.</param>
+    /// <param name="lastCol">Must specify the number of columns to read. Default is 10.</param>
+    /// <returns>An ArrayList giving the .Values for each cell in the row. NOTE: SOME ROWS MAY BE EMPTY</returns>
+    public ArrayList ReadRow(Worksheet sheet, int row, int lastCol = 10)
         {
             ArrayList values = new ArrayList();
             
@@ -117,6 +122,7 @@ namespace DentalMedical
             
             return values;
         }
+
         /// <summary>
         /// Return the worksheet given a string
         /// </summary
@@ -161,6 +167,9 @@ namespace DentalMedical
                 xlWorkbook.Close(SaveChanges:XlSaveAction.xlDoNotSaveChanges);
             else
                 xlWorkbook.Close(SaveChanges: XlSaveAction.xlSaveChanges, Filename: @"U:\Call Campaigns\ZZ_Merge & CBP RawData\CallBackProof Data\060118\PIMA_THC\" + xlWorkbook.Name + identifier + "." + xlWorkbook.FileFormat);
+            xlWorkbook = null;
+            dict = null;
+            Password = null;
         }
     }
 }
