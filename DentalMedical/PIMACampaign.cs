@@ -40,7 +40,17 @@ namespace DentalMedical
         public string HeadersToString()
         {
             string headerString = "";
-            foreach (object header in ExportHeaders("Provider", numberOfColumns)[0])
+            ArrayList monthHeaders = new ArrayList() ;
+            try
+            {
+                monthHeaders = ExportHeaders("Provider", numberOfColumns)[0];
+            }
+            catch(IndexOutOfRangeException ex)
+            {
+                throw ex;
+            }
+            
+            foreach (object header in monthHeaders)
             {
                 if (header != null)
                     headerString += header.ToString() + "|";
@@ -62,13 +72,19 @@ namespace DentalMedical
             DBConnection db = new DBConnection();
             if (db.IsConnect())
             {
-                dt.Load(db.QueryDB("SELECT * FROM " + sqlTableName + ";" ));
-                return dt.DefaultView;
+                try
+                {
+                    dt.Load(db.QueryDB("SELECT * FROM " + sqlTableName + ";"));
+                    return dt.DefaultView;
+                }
+                catch (MySql.Data.MySqlClient.MySqlException ex)
+                {
+                    throw ex;
+                }
+                
             }
             else
             {
-                
-                 new Exception("Could not connect to SQL");
                 return null;
             }
         }

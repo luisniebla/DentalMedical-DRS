@@ -49,10 +49,18 @@ namespace DentalMedical
         {
             ArrayList[] headers = new ArrayList[2];
 
-            if (masterHeaders == null)
-                masterHeaders = GetHeaders(masterSheet, firstHeader, lastColIndex);
-            if (monthHeaders == null)
-                monthHeaders = GetHeaders(monthSheet, firstHeader, lastColIndex);
+            try
+            {
+                if (masterHeaders == null)
+                    masterHeaders = GetHeaders(masterSheet, firstHeader, lastColIndex);
+                if (monthHeaders == null)
+                    monthHeaders = GetHeaders(monthSheet, firstHeader, lastColIndex);
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                throw ex;
+            }
+            
 
             headers[0] = monthHeaders;
             headers[1] = masterHeaders;

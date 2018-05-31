@@ -90,21 +90,33 @@ namespace DentalMedical
                 filePath = listBoxSearchResults.SelectedItem.ToString();
             }catch(NullReferenceException)
             {
-                Debug.WriteLine("Didn't select an item in the lisbox");
+                MessageBox.Show("Please select a listbox item");
+                return;
             }
             // Excel.Application is too slow. Let's try something else.
 
             xlApp = new Excel.Application();
 
-            thc = new PIMACampaign(xlApp, password, filePath, campaign, "June 2018");
+            try
+            {
+                thc = new PIMACampaign(xlApp, password, filePath, campaign, "May 2018");
 
-            Debug.WriteLine(thc.HeadersToString());
-            
-            DGCBP.DataContext = thc.GetCBPDataView("pima_eastside_cbp_june_results_53018");
-            DGCBP.UpdateLayout();
-            
-            
+                Debug.WriteLine(thc.HeadersToString());
 
+
+                DGCBP.DataContext = thc.GetCBPDataView("pima_greenvalley_cbp_may_results_53018");
+                DGCBP.UpdateLayout();
+            } catch (MySql.Data.MySqlClient.MySqlException mysqle) {
+                MessageBox.Show("Error during SQL transactions " + mysqle.ToString());
+                thc = null;
+                xlApp.Quit();
+            } catch (IndexOutOfRangeException ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                MessageBox.Show("Could not find column headers");
+                thc = null;
+                xlApp.Quit();
+            }
         }
 
         
@@ -149,8 +161,12 @@ namespace DentalMedical
 
         private void App_Close(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (thc != null)
-                thc.close();
+            // DOn't leave any excel processes open
+            if(thc != null) 
+                thc.close();    
+            if(xlApp != null)
+                xlApp.Quit();
+
         }
 
         private void BtnCBP_Click(object sender, RoutedEventArgs e)
@@ -158,6 +174,8 @@ namespace DentalMedical
             int rsults = thc.AttemptCallBackProof();
             Debug.WriteLine("DONE WITH CBP");
             thc.close("Post_CBP");
+            thc = null;
+            // Don't quite out of the excel app just yet
         }
     }
 }
