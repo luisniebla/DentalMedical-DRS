@@ -42,6 +42,23 @@ namespace DentalMedical
             return true;
         }
         
+        public void ExportCampaignToSQL(string filePath, string password, string campaign, string month)
+        {
+            
+
+            if (OpenCampaign(filePath, password, campaign, month) == true)
+            {
+                CreateStringTable(campaign + "_master", GetMasterHeaders()).Close();
+                CreateStringTable(campaign + "_month", GetMonthHeader()).Close();
+
+                selectedCampaign.CleanSheets(); // Remove all the commas.
+
+                LoadCSV(@"C:\\\Users\\\data\\\Desktop\\\" + campaign + "Master.csv", campaign + "_master");
+                LoadCSV(@"C:\\\Users\\\data\\\Desktop\\\" + campaign + "Month.csv", campaign + "_month");
+            }
+
+            
+        }
         public string LoadCSV(string csvPath, string sqlTable, string delimitter = ",")
         {
             string output = "";

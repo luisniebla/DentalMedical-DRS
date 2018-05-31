@@ -115,9 +115,10 @@ namespace DentalMedical
         }
 
         // New Philosophy: We should never delete things without explicit permission.
-        public void CleanSheet(string sheetName, string firstCol, string firstColHeader) 
+        public void CleanSheets() 
         {
-            ;
+            masterSheet.Range["A1", "Z" + GetLastRow("Master")].Replace(",", "");
+            monthSheet.Range["A1", "Z" + GetLastRow(Month)].Replace(",", "");
         }
 
         /// <summary>

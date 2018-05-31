@@ -11,7 +11,6 @@ namespace DentalMedical
         public string apptTable;
         public string monthTable;
         public string masterTable;
-
         DBConnection dbc;
         ExcelCampaign excelCampaign;
         string campaign = "6th_Street";
@@ -20,7 +19,7 @@ namespace DentalMedical
     
         public Blackford()
         {
-        dbc = new DBConnection();
+            dbc = new DBConnection();
         }
 
         public void SetApptTable(string campaign, string fileLoc)
@@ -35,6 +34,7 @@ namespace DentalMedical
 
         public void SetMonthTable(string campaign, string fileLoc)
         {
+            
 
         }
        

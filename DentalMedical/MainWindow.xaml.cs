@@ -95,8 +95,6 @@ namespace DentalMedical
             }
             // Excel.Application is too slow. Let's try something else.
 
-            xlApp = new Excel.Application();
-
             
         }
 
