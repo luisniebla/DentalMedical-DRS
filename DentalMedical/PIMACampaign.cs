@@ -117,6 +117,8 @@ namespace DentalMedical
             int apptCount = 0;
             int pendCount = 0;
             int keepCount = 0;
+            int deletedRCCount = 0;
+            
             int dataTableRowCount = 0;
             DataRow[] tbl = dt.Select();
             int totalMatches = 0;
@@ -135,13 +137,16 @@ namespace DentalMedical
                     string resolution = row.Field<string>(7);
                     string appt = row.Field<string>(0);
 
-                    
+                    if (resolution == "Appointment")
+                        flag = "K";
                     // Process the patient
                     // TODO: Move the indexs and resolution to global variables accesss/whatever, and move these repetitive stuff into their own functions
                     switch (flag)
                     {
                         // Process the appointment case
                         case "A":
+                            if (IsRC(resolution))
+                                deletedRCCount++;
                             monthSheet.Cells[found.Row, resColIndex] = "Appointment";
                             monthSheet.Cells[found.Row, resColIndex].Interior.ColorIndex = 0;   // Clear the queue
                             monthSheet.Cells[found.Row, updateColIndex] = updateStr;
@@ -151,6 +156,8 @@ namespace DentalMedical
                             break;
                         // Process pend/previous
                         case "":
+                            if (IsRC(resolution))
+                                deletedRCCount++;
                             monthSheet.Cells[found.Row, resColIndex] = "Pend/Previous Appt";
                             monthSheet.Cells[found.Row, resColIndex].Interior.ColorIndex = 0;
                             monthSheet.Cells[found.Row, updateColIndex] = updateStr;
@@ -161,7 +168,6 @@ namespace DentalMedical
                         case "K":
                             monthSheet.Cells[found.Row, updateColIndex] = updateStr;
                             monthSheet.Cells[found.Row, resColIndex].Interior.ColorIndex = 0;
-                            monthSheet.Cells[found.Row, apptColIndex] = appt;
                             keepCount++;
                             break;
                     }
@@ -177,12 +183,26 @@ namespace DentalMedical
                 + "\n Number of changed Appts: " + apptCount
                 + "\n Number of changed Pend/Prev: " + pendCount
                 + "\n Number of kept resolutions: " + keepCount
-                );
+                + "\n Number of deleted resolution: " + deletedRCCount);
 
             
             return totalMatches;
         }
 
+        public bool IsRC(string resolution)
+        {
+            string[] resolutionList = {"Appointment", "Call Back - DRS", "Call Back - OFC", "Not at This Time",
+                "Changed Physician", "Deceased", "NATT- Winter Visitor"};
+
+            if (resolutionList.Contains<string>(resolution))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         public void AttemptCBPRegex()
         {
