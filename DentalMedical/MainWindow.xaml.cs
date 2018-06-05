@@ -51,6 +51,7 @@ namespace DentalMedical
 
             //ReadExcelHeaders(xlCBPData.Worksheets[4], "CBPData");
             //xlCBPData.Close();
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -61,7 +62,7 @@ namespace DentalMedical
             IO myIO = new IO();
 
             string campaign = TextBoxSearchCriteria.Text;
-            string searchCriteria = "*" + campaign + "*Data*.xlsm";
+            string searchCriteria = " * " + campaign + "*Data*.xlsm";
 
             ArrayList foundFiles = myIO.getFiles(@"//serv-az/drs_ofc/05-DENTAL-MEDICAL/", searchCriteria);
 
@@ -73,6 +74,11 @@ namespace DentalMedical
             listBoxSearchResults.UpdateLayout();
 
             LabelSearchNotification.Content = "DONE";
+
+
+
+            OpenXMLSDK sdk = new OpenXMLSDK();
+            sdk.openLargeFile(@"\\serv-az\drs_client_admin\Call Campaigns\ZZ_Merge & CBP RawData\CallBackProof Data\060118\Bancroft CBP.xlsx");
         }
 
         PIMACampaign thc;
@@ -94,7 +100,7 @@ namespace DentalMedical
                 return;
             }
             // Excel.Application is too slow. Let's try something else.
-
+            
             
         }
 

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Odbc;
 using System.Data.OleDb;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,11 +12,12 @@ namespace DentalMedical
 {
     class OLEDBConnection
     {
+        
         public void openConnection(string filePath)
         {
             Dictionary<string, string> props = new Dictionary<string, string>();
 
-            props["Provider"] = "Provider=Microsoft.ACE.OLEDB.12.0";
+            props["Provider"] = "Provider=Microsoft.Jet.OLEDB.4.0";
             props["Extended Properties"] = "Excel 12.0 XML";
             props["Data Source"] = filePath;
 
@@ -29,6 +32,7 @@ namespace DentalMedical
             }
 
             DataSet ds = new DataSet();
+            
 
             string connectionString = sb.ToString();
             using (OleDbConnection conn = new OleDbConnection(connectionString))
