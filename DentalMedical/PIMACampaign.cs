@@ -135,7 +135,13 @@ namespace DentalMedical
                     string resolution = row.Field<string>(7);
                     string appt = row.Field<string>(0);
 
-                    
+                    if (resolution == "Call Back - PT" || resolution ==  "Call Back - DRS" || resolution ==  "Call Back - PT" || resolution == "Not At This Time" || resolution == "Changed Physcian" 
+                        || resolution == "NATT- Winter Visitor" )
+                    {
+                        MessageBox.Show("I was about to remove a CSR resolution and refuse to do so. Please verify change manually:" +
+                            "\nPtID:" + personNumber +
+                            "\nFlag:" + flag);
+                    }
                     // Process the patient
                     // TODO: Move the indexs and resolution to global variables accesss/whatever, and move these repetitive stuff into their own functions
                     switch (flag)

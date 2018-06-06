@@ -99,12 +99,12 @@ namespace DentalMedical
 
             try
             {
-                thc = new PIMACampaign(xlApp, password, filePath, campaign, "May 2018");
+                thc = new PIMACampaign(xlApp, password, filePath, campaign, "June 2018-MERGE");
 
                 Debug.WriteLine(thc.HeadersToString());
 
 
-                DGCBP.DataContext = thc.GetCBPDataView("pima_greenvalley_cbp_may_results_53018");
+                DGCBP.DataContext = thc.GetCBPDataView("pima_orovalley_cbp_june_results_53018");
                 DGCBP.UpdateLayout();
             } catch (MySql.Data.MySqlClient.MySqlException mysqle) {
                 MessageBox.Show("Error during SQL transactions " + mysqle.ToString());
