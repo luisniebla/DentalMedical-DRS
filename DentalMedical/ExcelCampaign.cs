@@ -72,7 +72,6 @@ namespace DentalMedical
                 // TODO: Verify that this works across all databases
                 // Works on: Diablo
                 
-                
                 return headers;
             }
         }
@@ -136,6 +135,50 @@ namespace DentalMedical
             }
         }
 
+        /**
+         * Assume data stored in NewData very prettily
+         */
+        public int CallBackProof( )
+        {
+            return 0;   
+        }
         
+        /// <summary>
+        /// Return the row of the first instance of text in a certain column using Excel Find command.
+        /// NOTE THIS IS NOTE MATCHING THE ENTIRE CELL
+        /// </summary>
+        /// <param name="column">The letter of the column to search</param>
+        /// <param name="text">Text to find</param>
+        /// <returns>
+        /// The row if the text in found within the column
+        /// 0 if the text is not found
+        /// -1 if there is a duplicate in the data, which we don't know how to handle right now
+        /// </returns>
+        public int FindItemInMonthColumn(string column, string text)
+        {
+
+            Range rng = monthSheet.Range[column + ":" + column].Find(text, LookAt: XlLookAt.xlPart);
+            
+            if (rng == null)
+            {
+                return 0;
+            }
+            else
+            {
+                int firstRow = rng.Row;
+
+                Range dupe = rng.FindNext();
+                int nextRow = dupe.Row;
+
+                if( nextRow == dupe.Row)
+                {
+                    return firstRow;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+        }
     }
 }

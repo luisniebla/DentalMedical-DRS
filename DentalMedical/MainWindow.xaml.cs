@@ -96,27 +96,18 @@ namespace DentalMedical
             // Excel.Application is too slow. Let's try something else.
 
             xlApp = new Excel.Application();
-
-            try
+            
+            ExcelCampaign bancroft = new ExcelCampaign(xlApp, password, filePath, campaign, "June 2018");
+            for(int i = 2; i < 2000; i++)
             {
-                thc = new PIMACampaign(xlApp, password, filePath, campaign, "May 2018");
-
-                Debug.WriteLine(thc.HeadersToString());
-
-
-                DGCBP.DataContext = thc.GetCBPDataView("pima_greenvalley_cbp_may_results_53018");
-                DGCBP.UpdateLayout();
-            } catch (MySql.Data.MySqlClient.MySqlException mysqle) {
-                MessageBox.Show("Error during SQL transactions " + mysqle.ToString());
-                thc = null;
-                xlApp.Quit();
-            } catch (IndexOutOfRangeException ex)
-            {
-                Debug.WriteLine(ex.ToString());
-                MessageBox.Show("Could not find column headers");
-                thc = null;
-                xlApp.Quit();
+                string lastName = bancroft.GetWorksheets()["NewData"].Range["B" + i].Value;
+                int findMatch = bancroft.FindItemInMonthColumn("B", lastName);
+                bancroft.GetWorksheets()["NewData"].Range["S" + i].Value = findMatch.ToString();
             }
+            
+            bancroft.close();
+            xlApp.Quit();
+            
         }
 
         
