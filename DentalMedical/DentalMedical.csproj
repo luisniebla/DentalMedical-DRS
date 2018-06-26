@@ -103,7 +103,7 @@
       <DependentUpon>CallBackProof.xaml</DependentUpon>
     </Compile>
     <Compile Include="PIMACampaign.cs" />
-    <Compile Include="ReadExcelData.cs" />
+    <Compile Include="Archive\ReadExcelData.cs" />
     <Page Include="CallBackProof.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -116,8 +116,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CSVToMySQL.cs" />
-    <Compile Include="DBConnection.cs" />
+    <Compile Include="Archive\CSVToMySQL.cs" />
+    <Compile Include="Archive\DBConnection.cs" />
     <Compile Include="ExcelCampaign.cs" />
     <Compile Include="ExcelHandler.cs" />
     <Compile Include="ExcelToMySQL.cs" />
@@ -129,7 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MySQLHandler.cs" />
-    <Compile Include="OLEDBConnection.cs" />
+    <Compile Include="Archive\OLEDBConnection.cs" />
     <Compile Include="OpenXMLSDK.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
