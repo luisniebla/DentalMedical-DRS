@@ -60,11 +60,7 @@ namespace DentalMedical
             return output;
         }
 
-        public string[] GetMonthHeader(string firstHeader = "First Name")
-        {
-            ArrayList headers = selectedCampaign.ExportHeaders(firstHeader)[0];
-            return ConvertArrayListToStringList(headers);
-        }
+       
 
         public string[] ConvertArrayListToStringList(ArrayList input)
         {

@@ -97,49 +97,16 @@ namespace DentalMedical
 
             xlApp = new Excel.Application();
             
-            ExcelCampaign bancroft = new ExcelCampaign(xlApp, password, filePath, campaign, "June 2018");
-            for(int i = 2; i < 2000; i++)
-            {
-                string lastName = bancroft.GetWorksheets()["NewData"].Range["B" + i].Value;
-                int findMatch = bancroft.FindItemInMonthColumn("B", lastName);
-                bancroft.GetWorksheets()["NewData"].Range["S" + i].Value = findMatch.ToString();
-            }
-            
-            bancroft.close();
+            ExcelCampaign thisCampaign = new ExcelCampaign(xlApp, password, filePath, campaign, "June 2018");
+
+            MessageBox.Show(thisCampaign.FindMonthColumnIndexByHeader("Status").ToString());
+
+            thisCampaign.Close();
             xlApp.Quit();
             
         }
-
         
-   
-        public void oledb()
-        {
-            using (OleDbConnection conn = new OleDbConnection())
-            {
-                System.Data.DataTable dt = new System.Data.DataTable();
-                string Import_FileName = @"C:\Users\data\Desktop\exceloutput.xlsx";
-                string fileExtension = System.IO.Path.GetExtension(Import_FileName);
-                if (fileExtension == ".xls")
-                    conn.ConnectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + Import_FileName + ";" + "Extended Properties='Excel 8.0;HDR=YES;'";
-                if (fileExtension == ".xlsx")
-                    conn.ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + Import_FileName + ";" + "Extended Properties='Excel 12.0 Xml;HDR=YES;'";
 
-
-                using (OleDbCommand comm = new OleDbCommand())
-                {
-                    comm.CommandText = "Select * from [" + "Master" + "$]";
-
-                    comm.Connection = conn;
-
-                    using (OleDbDataAdapter da = new OleDbDataAdapter())
-                    {
-                        da.SelectCommand = comm;
-                        da.Fill(dt);
-                    }
-
-                }
-            }
-        }
         private void BtnImport_Click(object sender, RoutedEventArgs e)
         { 
             // Append found to here.
@@ -153,8 +120,8 @@ namespace DentalMedical
         private void App_Close(object sender, System.ComponentModel.CancelEventArgs e)
         {
             // DOn't leave any excel processes open
-            if(thc != null) 
-                thc.close();    
+            if (thc != null)
+                thc.Close();
             if(xlApp != null)
                 xlApp.Quit();
 
@@ -164,7 +131,7 @@ namespace DentalMedical
         {
             int rsults = thc.AttemptCallBackProof();
             Debug.WriteLine("DONE WITH CBP");
-            thc.close("Post_CBP");
+            thc.Close();
             thc = null;
             // Don't quite out of the excel app just yet
         }

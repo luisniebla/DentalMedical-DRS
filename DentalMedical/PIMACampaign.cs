@@ -43,7 +43,7 @@ namespace DentalMedical
             ArrayList monthHeaders = new ArrayList() ;
             try
             {
-                monthHeaders = ExportHeaders("Provider", numberOfColumns)[0];
+                monthHeaders = GetMonthHeaderList();
             }
             catch(IndexOutOfRangeException ex)
             {

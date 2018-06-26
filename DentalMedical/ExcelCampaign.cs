@@ -11,6 +11,8 @@ namespace DentalMedical
 {
     public class ExcelCampaign : ExcelHandler
     {
+        Application xlApp = new Application();
+
         public string headerFlag;
         public int numberOfColumns;
 
@@ -20,7 +22,6 @@ namespace DentalMedical
         public ArrayList masterHeaders { get; set; }
         public Worksheet masterSheet { get; set; }
         public Worksheet monthSheet { get; set; }
-        
         
         public ExcelCampaign(Application xlApp, string password, string path, string title, string month) : base(xlApp, path, password)
         {
@@ -39,43 +40,107 @@ namespace DentalMedical
                 throw e;
             }
         }
-
         
-
-        /**
-         * TODO: This is unnecessary and confusing since it does two things at one time. Needs to be split up
-         * and the Headers need to get their own individual return functions with error handling */
-        public ArrayList[] ExportHeaders(string firstHeader = "First Name", int lastColIndex = 30, string exportPath = "")
+        /// <summary>
+        /// Find and grab the header column for a campaign
+        /// </summary>
+        /// <param name="firstHeader">Defaults to "First Name"</param>
+        /// <param name="lastColIndex">The size of the header array</param>
+        /// <returns>An ArrayList consisting of the month headers for a campaign</returns>
+        public ArrayList GetMonthHeaderList(string firstHeader = "First Name", int lastColIndex = 30)
         {
-            ArrayList[] headers = new ArrayList[2];
-
-            try
+            if (monthHeaders == null)
             {
-                if (masterHeaders == null)
-                    masterHeaders = GetHeaders(masterSheet, firstHeader, lastColIndex);
-                if (monthHeaders == null)
+                try
+                {
                     monthHeaders = GetHeaders(monthSheet, firstHeader, lastColIndex);
+                }
+                catch (IndexOutOfRangeException e)
+                {
+                    monthHeaders = null;
+                }
             }
-            catch (IndexOutOfRangeException ex)
-            {
-                throw ex;
-            }
-            
+                monthHeaders = GetHeaders(monthSheet, firstHeader, lastColIndex);
 
-            headers[0] = monthHeaders;
-            headers[1] = masterHeaders;
-
-            if (exportPath == "")
-                return headers;
-            else
-            {
-                // TODO: Verify that this works across all databases
-                // Works on: Diablo
-                
-                return headers;
-            }
+            return monthHeaders;
         }
 
+        public void cbp()
+        {
+            /**
+            string lastNameCol = "B";
+            string firstNameCol = "A";
+            string dobCol = "G";
+            string updateCol = "S";
+            **/
+            // Call back proofs don't need all the new insurance data... maybe?
+            /**
+            for (int i = 2; i < 2618; i++)
+            {
+                Worksheet newData = bancroft.GetWorksheets()["NewData"];
+                string lastName = newData.Range[lastNameCol + i].Value;
+
+                int findMatch = bancroft.FindItemInMonthColumn(lastNameCol, lastName);
+
+                if (findMatch > 0)
+                {
+                    string firstName = newData.Range[firstNameCol + i].Value;
+                    string DOB = newData.Range[dobCol + i].Value.ToString();
+
+                    if (bancroft.monthSheet.Range[dobCol + findMatch].Value.ToString() == DOB && bancroft.monthSheet.Range[firstNameCol + findMatch].Value == firstName)
+                    {
+                        newData.Range[updateCol + i].Value = "MONTH MATCH";
+                    }
+                    else
+                    {
+                        newData.Range[firstNameCol + i].EntireRow.Delete();
+                        i = i - 1;
+                    }
+                }
+                else
+                {
+                    newData.Range[firstNameCol + i].EntireRow.Delete();
+                    i = i - 1;
+                }
+            **/
+        }
+        
+        public string MonthHeadersToString()
+        {
+            string monthHeaderString = "";
+
+            if (monthHeaders == null)
+                monthHeaders = GetMonthHeaderList();
+
+
+            foreach (object s in monthHeaders)
+            {
+                if (s == null)
+                    monthHeaderString += "|";
+                else
+                    monthHeaderString += s.ToString() + "|";
+            }
+
+            return monthHeaderString;
+        }
+
+        public ArrayList GetMasterHeaders(string firstHeader, int lastColIndex)
+        {
+            if (masterHeaders == null)
+            {
+                try
+                {
+                    monthHeaders = GetHeaders(monthSheet, firstHeader, lastColIndex);
+                }
+                catch (IndexOutOfRangeException e)
+                {
+                    monthHeaders = null;
+                }
+            }
+            masterHeaders = GetHeaders(monthSheet, firstHeader, lastColIndex);
+
+            return monthHeaders;
+        }
         public void ExportCampaign(string exportPath)
         {
             // Grab the size of the datasets
@@ -90,24 +155,24 @@ namespace DentalMedical
             xlWorkbook.SaveAs(string.Format("{0}{1}{2}.csv", exportPath, Title, "Month"), XlFileFormat.xlCSVWindows, XlSaveAsAccessMode.xlNoChange);
         }
         /// <summary>
-        /// Given a column header, attempt to 
+        /// Given a column header, attempt to get the Excel-based index for it
         /// </summary>
         /// <param name="header"></param>
-        /// <returns></returns>
+        /// <returns>The Excel-based index depending on the</returns>
         public int FindMonthColumnIndexByHeader(string header)
         {
             if (monthHeaders == null)
             {
                 Debug.WriteLine("WARNING: Did not call ExportHeaders. Initial settings may be incorrect.");
-                monthHeaders = GetHeaders(monthSheet, "First Name", 22);
+                monthHeaders = GetMonthHeaderList();
             }
-            foreach (string column in monthHeaders)
-            {
-                if (column != null) // Sometimes the DIAL column doesn't have a header, it's fine.
-                    if (column.Contains(header))
-                         monthHeaders.IndexOf(column);
-            }
-            return -1;
+
+            int colIndex = monthHeaders.IndexOf(header);
+
+            if (colIndex == null)
+                return 0;
+            else
+                return colIndex + 1;
         }
 
         // New Philosophy: We should never delete things without explicit permission.

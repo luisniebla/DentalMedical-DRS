@@ -110,7 +110,7 @@ namespace DentalMedical
     /// <param name="lastCol">Must specify the number of columns to read. Default is 10.</param>
     /// <returns>An ArrayList giving the .Values for each cell in the row. NOTE: SOME ROWS MAY BE EMPTY</returns>
     public ArrayList ReadRow(Worksheet sheet, int row, int lastCol = 10)
-        {
+    {
             ArrayList values = new ArrayList();
             
             for(int colIndex = 1; colIndex <= lastCol; colIndex++)
@@ -161,12 +161,20 @@ namespace DentalMedical
         /// Close the Excel workbook.
         /// </summary>
         /// <param name="identifier">Give the option  </param>
-        public void close(string identifier = "")
+        public void Close()
         {
             if (identifier == "")
                 xlWorkbook.Close(SaveChanges:XlSaveAction.xlDoNotSaveChanges);
-            else
-                xlWorkbook.Close(SaveChanges: XlSaveAction.xlSaveChanges, Filename: @"U:\Call Campaigns\ZZ_Merge & CBP RawData\CallBackProof Data\060118\PIMA_THC\" + xlWorkbook.Name + identifier + "." + xlWorkbook.FileFormat);
+            
+            xlWorkbook = null;
+            dict = null;
+            Password = null;
+        }
+
+        public void CloseAndSave(string filePath)
+        {
+            xlWorkbook.SaveAs(filePath);
+            xlWorkbook.Close();
             xlWorkbook = null;
             dict = null;
             Password = null;
